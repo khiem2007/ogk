@@ -1,0 +1,11 @@
+name: Repository structure
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  structure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check structure and local documentation links
+        run: python3 scripts/check_structure.py
