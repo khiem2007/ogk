@@ -7,8 +7,9 @@ Không coi việc có thư mục hay CI kiểm tra cấu trúc là đã hoàn th
 
 ## Tài liệu bắt đầu
 
-- [Bảng phân công chi tiết, kiến thức cần học và lịch 8 tuần](docs/PHAN_CONG.md).
-- [Kế hoạch và bộ prompt gốc](docs/PROJECT_BRIEF.md) — giữ nguyên tài liệu người dùng.
+- [Bảng phân công chi tiết, kiến thức cần học và lịch 5 tuần](docs/PHAN_CONG.md).
+- [Kế hoạch và bộ prompt hiện hành](docs/PROJECT_BRIEF.md); [bản nguồn ban đầu](docs/reference/Ke-hoach-va-prompt-OGK.original.md).
+- [Lịch Calendar để gửi nhóm](docs/calendar/README.md) — 26/10–29/11/2026, file `.ics` toàn nhóm và từng thành viên.
 - [Mục lục 9 ảnh tham chiếu](docs/reference/README.md).
 - [Kiến trúc](docs/ARCHITECTURE.md), [các điểm cần chốt](docs/DECISIONS.md), [hợp đồng tích hợp](contracts/README.md).
 - [Quy trình làm việc nhóm](CONTRIBUTING.md), [tiến độ thực tế](docs/PROGRESS.md), [checklist Windows](tests/manual/WINDOWS_CHECKLIST.md).
@@ -51,6 +52,6 @@ Tray PySide6; DNS loopback UDP/TCP. Agent chủ động kết nối HTTPS ra ser
 MVP gồm auth/pairing, policy/quota, foreground usage, app block, request/grant, command,
 offline outbox, report/audit và DNS có restore. WebSocket, SafeSearch, 2FA, template tuổi và CSV là mở rộng.
 
-Giả định nhóm 3 người, 8 tuần, 15–20 giờ/người/tuần; tên thành viên chưa được cung cấp nên dùng TV1–TV3.
+Kế hoạch nhóm 3 người, **5 tuần từ 26/10 đến hết 29/11/2026**, trung bình **27,2 giờ/người/tuần** (136 giờ/người); tên thành viên chưa được cung cấp nên dùng TV1–TV3.
 Demo một máy, một phiên trẻ standard user; quota theo từng thiết bị.
 Không thu screenshot/keylogger/tin nhắn, không shell từ xa; không hứa chặn tuyệt đối admin/DoH/VPN.

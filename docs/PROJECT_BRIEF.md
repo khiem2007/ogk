@@ -1,10 +1,12 @@
 # Kế hoạch đồ án và bộ prompt coding agent — Người Bạn Đồng Hành (OGK)
 
+> Cập nhật 26/10/2026 theo yêu cầu người dùng: kế hoạch hiện hành là **5 tuần, 26/10–29/11/2026**. Chi tiết từng task và deadline xem [PHAN_CONG.md](PHAN_CONG.md); lịch gửi nhóm tại [calendar/README.md](calendar/README.md). [Bản nguồn trước cập nhật](reference/Ke-hoach-va-prompt-OGK.original.md).
+
 ## 1. Cơ sở và giả định
 
 Tài liệu được xây dựng từ 9 ảnh người dùng cung cấp: 3 ảnh đầu mô tả kiến trúc; 6 ảnh sau thể hiện dashboard demo. Một số vùng ảnh bị mờ hoặc che, vì vậy các chi tiết không đọc rõ không được xem là yêu cầu đã xác nhận.
 
-Giả định để lập kế hoạch: 3 sinh viên, 7 tuần, khoảng 15–20 giờ/tuần; demo với 1 máy Windows được quản lý, 1 phụ huynh và 1 trẻ. Hệ thống dữ liệu vẫn hỗ trợ nhiều gia đình và thiết bị, nhưng bản đầu chỉ hỗ trợ 1 phiên trẻ hoạt động trên mỗi thiết bị; tổng hạn mức tính riêng từng thiết bị. Máy trẻ dùng tài khoản Windows standard user; tài khoản quản trị thuộc phụ huynh. Nếu cần tổng hạn mức chung cho nhiều máy hoặc Fast User Switching đầy đủ, phải mở rộng thiết kế.
+Giả định để lập kế hoạch: 3 sinh viên, 5 tuần (26/10–29/11/2026), trung bình 27,2 giờ/người/tuần; demo với 1 máy Windows được quản lý, 1 phụ huynh và 1 trẻ. Hệ thống dữ liệu vẫn hỗ trợ nhiều gia đình và thiết bị, nhưng bản đầu chỉ hỗ trợ 1 phiên trẻ hoạt động trên mỗi thiết bị; tổng hạn mức tính riêng từng thiết bị. Máy trẻ dùng tài khoản Windows standard user; tài khoản quản trị thuộc phụ huynh. Nếu cần tổng hạn mức chung cho nhiều máy hoặc Fast User Switching đầy đủ, phải mở rộng thiết kế.
 
 Tên đề tài gợi ý: “Xây dựng hệ thống quản lý thời gian và hoạt động sử dụng máy tính của trẻ trên Windows, có cấu hình từ xa và hoạt động khi mất kết nối”.
 
@@ -211,20 +213,21 @@ Phong cách demo: nền sáng, sidebar trái, xanh lá nhạt, card bo góc, ch�
 
 Tray hiển thị rõ phần mềm đang hoạt động, số phút còn lại, lịch, trạng thái server, lý do hạn chế, nút xin thêm giờ/xin mở app và trạng thái gửi/chờ/được duyệt. Chế độ offline vẫn cho tạo request trong queue nhưng ghi “chưa gửi”. Đóng cửa sổ Tray không đồng nghĩa tắt service. Màn hình minh bạch mô tả dữ liệu được thu thập và không thu thập.
 
-## 9. Lịch thực hiện 8 tuần
+## 9. Lịch thực hiện 5 tuần
 
-| Tuần | Công việc | Đầu ra và cổng nghiệm thu |
-|---|---|---|
-| 1 | SRS, policy truth table, ERD/API; spike Windows Session 0, IPC, DNS rollback | Chứng minh helper đọc đúng session và service nhận dữ liệu; khóa/khôi phục DNS có cách thử. Nếu spike thất bại, điều chỉnh phạm vi ngay |
-| 2 | Repo, CI, schema, auth, pairing, policy CRUD | Hai gia đình test không đọc chéo; mã enrollment dùng một lần; migration DB mới chạy được |
-| 3 | Policy engine và counter thuần Python; simulator | Fake clock test lịch/quota/ngoại lệ/midnight/restart; chưa thao tác máy thật |
-| 4 | Windows service/helper/Tray; process control và khóa phiên | Agent thật lấy foreground, đếm đúng; chặn executable thử nghiệm; không ảnh hưởng phiên phụ huynh |
-| 5 | Outbox, heartbeat, command, requests/grants | Mất mạng 10 phút vẫn áp dụng; reconnect không nhân event hoặc cộng grant hai lần |
-| 6 | Dashboard đầy đủ, báo cáo từ dữ liệu thật, age templates | Luồng đặt policy → applied → chặn → xin → duyệt → nhận thêm giờ hoạt động E2E |
-| 7 | DNS rules/proxy và cấu hình khôi phục; WebSocket/SafeSearch nếu đủ thời gian | Domain thử nghiệm bị chặn; miền cho phép hoạt động; gỡ trả DNS về trạng thái ban đầu |
-| 8 | Installer, kiểm thử Windows, tài liệu và video demo | Cài trên VM sạch, restart, offline/recovery, uninstall; có báo cáo kiểm thử và kịch bản bảo vệ |
+| Tuần | Ngày | TV1 | TV2 | TV3 | Mốc nghiệm thu cuối tuần |
+|---|---|---|---|---|---|
+| 1 | 26/10–01/11 | A01–A02; bắt đầu A03 | B01–B02 | C01–C02 | SRS/ERD/contracts, spike SID/session/IPC/DNS, core và UI shell; auth đang triển khai |
+| 2 | 02/11–08/11 | Hoàn tất A03; A04–A05; bắt đầu A06 | B03–B04; bắt đầu B05 | C03; bắt đầu C04 | Ghép thiết bị và policy thật; simulator/counter pass; bắt đầu tích hợp service |
+| 3 | 09/11–15/11 | Hoàn tất A06; A07–A08 | Hoàn tất B05; B06–B07 | Hoàn tất C04; C05 | Service/Tray thật; offline/reconnect, request/grant và command qua API/agent; UI quản trị hoàn tất đầu tuần 4 |
+| 4 | 16/11–22/11 | A09–A10 | B08; chuẩn bị B09 | C06–C07 | Luồng UI → API → agent hoàn chỉnh; báo cáo thật; DNS proxy pass, adapter chuẩn bị tích hợp |
+| 5 | 23/11–29/11 | A11–A12 | Hoàn tất B09; B10 | C08–C10 | 25/11: DNS tích hợp; 28/11: chốt release candidate và test VM; 29/11: nghiệm thu, demo, bàn giao |
 
-Phân bổ dự kiến 120–160 giờ; đây là ước lượng lập kế hoạch. Nếu chỉ còn 4 tuần: giữ auth/pairing, quota+lịch, 1 executable test, request/grant, offline và báo cáo; dùng DNS danh sách thủ công; hoãn WebSocket, SafeSearch, 2FA và bộ cài đẹp. Không bỏ luồng thực thi thật để chỉ hoàn thiện dashboard.
+Tổng kế hoạch **136 giờ/người**, **408 giờ toàn nhóm**, gồm review và dự phòng; trung bình
+27,2 giờ/người/tuần. Chi tiết 32 đầu việc, ngày bắt đầu/hạn hoàn thành và phụ thuộc xem PHAN_CONG.md.
+Ngày 28/11 chốt release candidate, 29/11 nghiệm thu/demo/bàn giao. Không thêm tính năng mới tuần 5.
+Giữ MVP, dùng domain list thủ công; WebSocket/SafeSearch/2FA/CSV/template tuổi/installer đẹp sau deadline.
+Nếu nhóm chỉ có 15–20 giờ/người/tuần, phải thống nhất giảm phạm vi vì 5 tuần chỉ có 225–300 giờ nhóm.
 
 ## 10. Kiểm thử và định nghĩa hoàn thành
 
