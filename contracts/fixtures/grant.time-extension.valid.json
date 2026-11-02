@@ -1,0 +1,13 @@
+{
+    "schema_version": 1,
+    "grant_id": "eaaf391b-1e4d-414f-bdbd-90d31e122fa7",
+    "source_request_id": "7b8d36bb-9b56-4f8d-b8c7-74c1f0a3b36c",
+    "grant_type": "time_extension",
+    "device_id": "a3e1f4d0-00f7-4e84-9dbe-13e9c77510a1",
+    "valid_from": "2026-11-02T09:11:00Z",
+    "valid_until": "2026-11-02T16:59:59Z",
+    "scope": {
+        "local_date": "2026-11-02",
+        "amount_seconds": 600
+    }
+}

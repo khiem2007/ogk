@@ -1,0 +1,245 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://ogk.example/contracts/v1/ipc_message.schema.json",
+    "title": "OGK local IPC message v1",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "schema_version",
+        "message_id",
+        "sent_at",
+        "session_id",
+        "child_sid",
+        "message_type",
+        "payload"
+    ],
+    "properties": {
+        "schema_version": {
+            "const": 1
+        },
+        "message_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "sent_at": {
+            "$ref": "common.schema.json#/$defs/date_time"
+        },
+        "session_id": {
+            "type": "integer",
+            "minimum": 1
+        },
+        "child_sid": {
+            "$ref": "common.schema.json#/$defs/windows_sid"
+        },
+        "message_type": {
+            "type": "string",
+            "enum": [
+                "telemetry.sample",
+                "request.submit",
+                "status.get",
+                "notification.ack",
+                "command.lock",
+                "command.result"
+            ]
+        },
+        "payload": {
+            "type": "object"
+        }
+    },
+    "allOf": [
+        {
+            "if": {
+                "properties": {
+                    "message_type": {
+                        "const": "telemetry.sample"
+                    }
+                },
+                "required": [
+                    "message_type"
+                ]
+            },
+            "then": {
+                "properties": {
+                    "payload": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "sampled_at",
+                            "monotonic_ms",
+                            "session_active",
+                            "locked",
+                            "sleeping",
+                            "idle_seconds"
+                        ],
+                        "properties": {
+                            "sampled_at": {
+                                "$ref": "common.schema.json#/$defs/date_time"
+                            },
+                            "monotonic_ms": {
+                                "type": "integer",
+                                "minimum": 0
+                            },
+                            "session_active": {
+                                "type": "boolean"
+                            },
+                            "locked": {
+                                "type": "boolean"
+                            },
+                            "sleeping": {
+                                "type": "boolean"
+                            },
+                            "idle_seconds": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 604800
+                            },
+                            "foreground_executable": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "maxLength": 128
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "message_type": {
+                        "const": "request.submit"
+                    }
+                },
+                "required": [
+                    "message_type"
+                ]
+            },
+            "then": {
+                "properties": {
+                    "payload": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "request_id",
+                            "request_type",
+                            "reason"
+                        ],
+                        "properties": {
+                            "request_id": {
+                                "$ref": "common.schema.json#/$defs/uuid"
+                            },
+                            "request_type": {
+                                "type": "string",
+                                "enum": [
+                                    "time_extension",
+                                    "app_exception"
+                                ]
+                            },
+                            "reason": {
+                                "$ref": "common.schema.json#/$defs/reason"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "message_type": {
+                        "enum": [
+                            "status.get",
+                            "notification.ack"
+                        ]
+                    }
+                },
+                "required": [
+                    "message_type"
+                ]
+            },
+            "then": {
+                "properties": {
+                    "payload": {
+                        "type": "object",
+                        "maxProperties": 8
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "message_type": {
+                        "const": "command.lock"
+                    }
+                },
+                "required": [
+                    "message_type"
+                ]
+            },
+            "then": {
+                "properties": {
+                    "payload": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "command_id",
+                            "expires_at"
+                        ],
+                        "properties": {
+                            "command_id": {
+                                "$ref": "common.schema.json#/$defs/uuid"
+                            },
+                            "expires_at": {
+                                "$ref": "common.schema.json#/$defs/date_time"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "message_type": {
+                        "const": "command.result"
+                    }
+                },
+                "required": [
+                    "message_type"
+                ]
+            },
+            "then": {
+                "properties": {
+                    "payload": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "command_id",
+                            "status",
+                            "result_code"
+                        ],
+                        "properties": {
+                            "command_id": {
+                                "$ref": "common.schema.json#/$defs/uuid"
+                            },
+                            "status": {
+                                "type": "string",
+                                "enum": [
+                                    "executed",
+                                    "failed",
+                                    "expired"
+                                ]
+                            },
+                            "result_code": {
+                                "type": "string",
+                                "pattern": "^[A-Z0-9_]{1,64}$"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+{
+    "schema_version": 1,
+    "message_id": "eb78f8e9-f189-4c06-b5dc-c0ba3d497d86",
+    "sent_at": "2026-11-02T09:01:30Z",
+    "session_id": 2,
+    "child_sid": "S-1-5-21-111-222-333-1001",
+    "message_type": "telemetry.sample",
+    "payload": {
+        "sampled_at": "2026-11-02T09:01:30Z",
+        "monotonic_ms": 982300,
+        "session_active": true,
+        "locked": false,
+        "sleeping": false,
+        "idle_seconds": 12,
+        "foreground_executable": "sample-game.exe"
+    }
+}

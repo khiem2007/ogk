@@ -1,0 +1,212 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://ogk.example/contracts/v1/policy.schema.json",
+    "title": "OGK device policy snapshot v1",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "schema_version",
+        "device_id",
+        "policy_version",
+        "issued_at",
+        "policy"
+    ],
+    "properties": {
+        "schema_version": {
+            "const": 1
+        },
+        "device_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "policy_version": {
+            "type": "integer",
+            "minimum": 1
+        },
+        "issued_at": {
+            "$ref": "common.schema.json#/$defs/date_time"
+        },
+        "policy": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "timezone",
+                "idle_threshold_seconds",
+                "manual_lock",
+                "schedule",
+                "quotas",
+                "apps",
+                "domains"
+            ],
+            "properties": {
+                "timezone": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                },
+                "idle_threshold_seconds": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 86400
+                },
+                "manual_lock": {
+                    "type": "boolean"
+                },
+                "schedule": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "day_of_week",
+                            "start",
+                            "end"
+                        ],
+                        "properties": {
+                            "day_of_week": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 6,
+                                "description": "0=Monday through 6=Sunday (Python weekday convention)."
+                            },
+                            "start": {
+                                "type": "string",
+                                "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$"
+                            },
+                            "end": {
+                                "type": "string",
+                                "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$"
+                            }
+                        }
+                    }
+                },
+                "quotas": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "total_daily_seconds",
+                        "category_daily_seconds"
+                    ],
+                    "properties": {
+                        "total_daily_seconds": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 86400
+                        },
+                        "category_daily_seconds": {
+                            "type": "object",
+                            "propertyNames": {
+                                "enum": [
+                                    "education",
+                                    "entertainment",
+                                    "games",
+                                    "other"
+                                ]
+                            },
+                            "additionalProperties": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 86400
+                            }
+                        }
+                    }
+                },
+                "apps": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "app_id",
+                            "executable_name",
+                            "category",
+                            "decision"
+                        ],
+                        "properties": {
+                            "app_id": {
+                                "$ref": "common.schema.json#/$defs/uuid"
+                            },
+                            "executable_name": {
+                                "type": "string",
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}\\.exe$"
+                            },
+                            "category": {
+                                "$ref": "common.schema.json#/$defs/category"
+                            },
+                            "decision": {
+                                "type": "string",
+                                "enum": [
+                                    "allow",
+                                    "block"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "domains": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "mode",
+                        "hard_block",
+                        "explicit_allow",
+                        "category_rules"
+                    ],
+                    "properties": {
+                        "mode": {
+                            "type": "string",
+                            "enum": [
+                                "allowlist",
+                                "blocklist"
+                            ]
+                        },
+                        "hard_block": {
+                            "type": "array",
+                            "uniqueItems": true,
+                            "items": {
+                                "$ref": "common.schema.json#/$defs/domain"
+                            }
+                        },
+                        "explicit_allow": {
+                            "type": "array",
+                            "uniqueItems": true,
+                            "items": {
+                                "$ref": "common.schema.json#/$defs/domain"
+                            }
+                        },
+                        "category_rules": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "required": [
+                                    "category",
+                                    "decision",
+                                    "domains"
+                                ],
+                                "properties": {
+                                    "category": {
+                                        "$ref": "common.schema.json#/$defs/category"
+                                    },
+                                    "decision": {
+                                        "type": "string",
+                                        "enum": [
+                                            "allow",
+                                            "block"
+                                        ]
+                                    },
+                                    "domains": {
+                                        "type": "array",
+                                        "uniqueItems": true,
+                                        "items": {
+                                            "$ref": "common.schema.json#/$defs/domain"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

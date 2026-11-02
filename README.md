@@ -11,7 +11,7 @@ Không coi việc có thư mục hay CI kiểm tra cấu trúc là đã hoàn th
 - [Kế hoạch và bộ prompt hiện hành](docs/PROJECT_BRIEF.md); [bản nguồn ban đầu](docs/reference/Ke-hoach-va-prompt-OGK.original.md).
 - [Lịch Calendar để gửi nhóm](docs/calendar/README.md) — 26/10–29/11/2026, file `.ics` toàn nhóm và từng thành viên.
 - [Mục lục 9 ảnh tham chiếu](docs/reference/README.md).
-- [Kiến trúc](docs/ARCHITECTURE.md), [các điểm cần chốt](docs/DECISIONS.md), [hợp đồng tích hợp](contracts/README.md).
+- [SRS](docs/SRS.md), [ERD](docs/ERD.md), [API v1](docs/API.md), [kiến trúc](docs/ARCHITECTURE.md), [các điểm cần chốt](docs/DECISIONS.md), [hợp đồng tích hợp](contracts/README.md).
 - [Quy trình làm việc nhóm](CONTRIBUTING.md), [tiến độ thực tế](docs/PROGRESS.md), [checklist Windows](tests/manual/WINDOWS_CHECKLIST.md).
 
 ## Cấu trúc
