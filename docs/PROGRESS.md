@@ -20,3 +20,14 @@
 - Tạo calendar iCalendar toàn nhóm và từng TV, cùng hướng dẫn chia sẻ/import; chưa tạo lịch trực tiếp trên tài khoản Calendar.
 - Chỉ thay kế hoạch và lịch; chưa có bằng chứng mới về tiến độ triển khai sản phẩm.
 - Kiểm tra bàn giao: script kiểm tra cấu trúc, đối chiếu 32 task với lịch, định dạng iCalendar và diff Git.
+
+## 2026-11-02 — TV1 A01: SRS, ERD và API contract
+
+- Đã viết `docs/SRS.md`: actors/use cases, MVP/extension/out-of-scope, 16 FR có AC riêng, NFR có acceptance ID, traceability đủ 9 ảnh và sequence policy → agent → event.
+- Đã viết `docs/ERD.md` và `docs/API.md`; chốt ownership boundary, transaction/dedup, policy version, status/ACK, expiry, logical entities và endpoints v1.
+- Đã bổ sung `docs/POLICY_RULES.md` để hoàn tất liên kết từ architecture và ghi truth table schedule/quota/grant/domain; phần này đang chờ review TV1/TV2/TV3 và chưa phải implementation.
+- Đã tạo JSON Schema Draft 2020-12 v1 cho common, policy, event, command/ACK, request, grant và IPC; fixtures hợp lệ cho các luồng chính, dùng UUID/domain/SID giả.
+- TV2/TV3 review: **chờ xác nhận**; chưa ghi nhận review hoặc acceptance contract v1.
+- Diagnostics: VS Code `get_errors` báo không có lỗi cho SRS/ERD/API, các schema/fixture JSON và các README liên quan. Đây là diagnostics cú pháp, chưa phải chạy JSON Schema validator trên instance. `python scripts/check_structure.py` chưa chạy vì terminal không trỏ tới working tree VFS; repo chưa có runtime validator dependency.
+- Chưa có server/OpenAPI/migration/runtime; schema format validation không thay semantic checks về ownership, temporal ordering, expiry, policy precedence hay session authorization.
+- Bước tiếp: TV2 review policy/event/command/IPC và TV3 review request/UI states; cập nhật contract trước khi implementation lấy schema làm nguồn chuẩn.

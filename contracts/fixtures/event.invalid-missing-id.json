@@ -1,0 +1,13 @@
+{
+    "schema_version": 1,
+    "boot_id": "4d18c6f7-5e69-4c46-9e4b-c5d38fb879d2",
+    "sequence": 43,
+    "observed_at": "2026-11-02T09:02:00Z",
+    "event_type": "usage.interval",
+    "payload": {
+        "started_at": "2026-11-02T09:01:30Z",
+        "ended_at": "2026-11-02T09:02:00Z",
+        "active_seconds": 30,
+        "telemetry_quality": "measured"
+    }
+}

@@ -1,0 +1,134 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://ogk.example/contracts/v1/command.schema.json",
+    "title": "OGK server-to-agent command v1",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "schema_version",
+        "command_id",
+        "command_type",
+        "issued_at",
+        "expires_at",
+        "payload"
+    ],
+    "properties": {
+        "schema_version": {
+            "const": 1
+        },
+        "command_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "command_type": {
+            "type": "string",
+            "enum": [
+                "LOCK_SESSION",
+                "CLEAR_MANUAL_LOCK",
+                "TEMPORARY_TIME_EXEMPTION",
+                "EXEMPT_UNTIL_LOCAL_DAY_END"
+            ]
+        },
+        "issued_at": {
+            "$ref": "common.schema.json#/$defs/date_time"
+        },
+        "expires_at": {
+            "$ref": "common.schema.json#/$defs/date_time"
+        },
+        "payload": {
+            "type": "object"
+        }
+    },
+    "allOf": [
+        {
+            "if": {
+                "properties": {
+                    "command_type": {
+                        "enum": [
+                            "LOCK_SESSION",
+                            "CLEAR_MANUAL_LOCK"
+                        ]
+                    }
+                },
+                "required": [
+                    "command_type"
+                ]
+            },
+            "then": {
+                "properties": {
+                    "payload": {
+                        "type": "object",
+                        "maxProperties": 0
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "command_type": {
+                        "const": "TEMPORARY_TIME_EXEMPTION"
+                    }
+                },
+                "required": [
+                    "command_type"
+                ]
+            },
+            "then": {
+                "properties": {
+                    "payload": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "grant_id",
+                            "duration_seconds",
+                            "scope"
+                        ],
+                        "properties": {
+                            "grant_id": {
+                                "$ref": "common.schema.json#/$defs/uuid"
+                            },
+                            "duration_seconds": {
+                                "const": 900
+                            },
+                            "scope": {
+                                "const": "time_limits"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "command_type": {
+                        "const": "EXEMPT_UNTIL_LOCAL_DAY_END"
+                    }
+                },
+                "required": [
+                    "command_type"
+                ]
+            },
+            "then": {
+                "properties": {
+                    "payload": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "grant_id",
+                            "scope"
+                        ],
+                        "properties": {
+                            "grant_id": {
+                                "$ref": "common.schema.json#/$defs/uuid"
+                            },
+                            "scope": {
+                                "const": "time_limits"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

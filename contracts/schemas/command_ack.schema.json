@@ -1,0 +1,41 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://ogk.example/contracts/v1/command_ack.schema.json",
+    "title": "OGK agent command result v1",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "schema_version",
+        "command_id",
+        "status",
+        "observed_at",
+        "result_code"
+    ],
+    "properties": {
+        "schema_version": {
+            "const": 1
+        },
+        "command_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "executed",
+                "failed",
+                "expired"
+            ]
+        },
+        "observed_at": {
+            "$ref": "common.schema.json#/$defs/date_time"
+        },
+        "result_code": {
+            "type": "string",
+            "pattern": "^[A-Z0-9_]{1,64}$"
+        },
+        "details": {
+            "type": "object",
+            "maxProperties": 8
+        }
+    }
+}

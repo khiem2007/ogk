@@ -1,0 +1,160 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://ogk.example/contracts/v1/grant.schema.json",
+    "title": "OGK device grant v1",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "schema_version",
+        "grant_id",
+        "grant_type",
+        "device_id",
+        "valid_from",
+        "valid_until",
+        "scope"
+    ],
+    "properties": {
+        "schema_version": {
+            "const": 1
+        },
+        "grant_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "source_request_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "source_command_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "grant_type": {
+            "type": "string",
+            "enum": [
+                "time_extension",
+                "app_exception",
+                "time_exemption"
+            ]
+        },
+        "device_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "valid_from": {
+            "$ref": "common.schema.json#/$defs/date_time"
+        },
+        "valid_until": {
+            "$ref": "common.schema.json#/$defs/date_time"
+        },
+        "scope": {
+            "type": "object"
+        }
+    },
+    "oneOf": [
+        {
+            "required": [
+                "source_request_id"
+            ]
+        },
+        {
+            "required": [
+                "source_command_id"
+            ]
+        }
+    ],
+    "allOf": [
+        {
+            "if": {
+                "properties": {
+                    "grant_type": {
+                        "const": "time_extension"
+                    }
+                },
+                "required": [
+                    "grant_type"
+                ]
+            },
+            "then": {
+                "properties": {
+                    "scope": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "local_date",
+                            "amount_seconds"
+                        ],
+                        "properties": {
+                            "local_date": {
+                                "$ref": "common.schema.json#/$defs/local_date"
+                            },
+                            "amount_seconds": {
+                                "type": "integer",
+                                "minimum": 60,
+                                "maximum": 14400
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "grant_type": {
+                        "const": "app_exception"
+                    }
+                },
+                "required": [
+                    "grant_type"
+                ]
+            },
+            "then": {
+                "properties": {
+                    "scope": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "app_id"
+                        ],
+                        "properties": {
+                            "app_id": {
+                                "$ref": "common.schema.json#/$defs/uuid"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "grant_type": {
+                        "const": "time_exemption"
+                    }
+                },
+                "required": [
+                    "grant_type"
+                ]
+            },
+            "then": {
+                "properties": {
+                    "scope": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "bypass",
+                            "timezone"
+                        ],
+                        "properties": {
+                            "bypass": {
+                                "const": "schedule_and_time_quotas"
+                            },
+                            "timezone": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 64
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

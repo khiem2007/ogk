@@ -1,0 +1,109 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://ogk.example/contracts/v1/request.schema.json",
+    "title": "OGK child request v1",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "schema_version",
+        "request_id",
+        "request_type",
+        "created_at",
+        "reason",
+        "payload"
+    ],
+    "properties": {
+        "schema_version": {
+            "const": 1
+        },
+        "request_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "request_type": {
+            "type": "string",
+            "enum": [
+                "time_extension",
+                "app_exception"
+            ]
+        },
+        "created_at": {
+            "$ref": "common.schema.json#/$defs/date_time"
+        },
+        "reason": {
+            "$ref": "common.schema.json#/$defs/reason"
+        },
+        "payload": {
+            "type": "object"
+        }
+    },
+    "allOf": [
+        {
+            "if": {
+                "properties": {
+                    "request_type": {
+                        "const": "time_extension"
+                    }
+                },
+                "required": [
+                    "request_type"
+                ]
+            },
+            "then": {
+                "properties": {
+                    "payload": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "amount_seconds",
+                            "local_date"
+                        ],
+                        "properties": {
+                            "amount_seconds": {
+                                "type": "integer",
+                                "minimum": 60,
+                                "maximum": 14400
+                            },
+                            "local_date": {
+                                "$ref": "common.schema.json#/$defs/local_date"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "request_type": {
+                        "const": "app_exception"
+                    }
+                },
+                "required": [
+                    "request_type"
+                ]
+            },
+            "then": {
+                "properties": {
+                    "payload": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "app_id",
+                            "duration_seconds"
+                        ],
+                        "properties": {
+                            "app_id": {
+                                "$ref": "common.schema.json#/$defs/uuid"
+                            },
+                            "duration_seconds": {
+                                "type": "integer",
+                                "minimum": 60,
+                                "maximum": 14400
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
