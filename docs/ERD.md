@@ -1,6 +1,6 @@
 # ERD và data dictionary — OpenGuard Kids
 
-**Mã công việc:** TV1-A01  
+**Mã công việc:** TV1-A01
 **Trạng thái:** logical model đề xuất cho contract review; chưa có ORM model/migration.
 
 ## Quan hệ

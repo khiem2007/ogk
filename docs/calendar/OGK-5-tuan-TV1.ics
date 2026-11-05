@@ -7,20 +7,20 @@ X-WR-CALNAME:OGK | TV1 | 5 tuần
 X-WR-TIMEZONE:Asia/Bangkok
 BEGIN:VEVENT
 UID:ogk-20261026-a01@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261026
 DTEND;VALUE=DATE:20261029
-SUMMARY:[OGK][TV1][A01] Chốt SRS\, ERD và API
+SUMMARY:[OGK][TV1][A01] Chốt SRS\, ERD\, API và traceability PDF
 DESCRIPTION:Phụ trách: TV1\nTuần: 1\nƯớc lượng: 12 giờ trong k
  hoảng triển khai này (không phải làm cả ngày).\nHạn hoàn th
  ành: 28/10/2026\, hết ngày UTC+7.\nPhụ thuộc: —\nĐầu ra: Ch
- ốt SRS\, ERD và API\; docs/SRS.md\, ERD.md\; contracts/schemas\nKiến
-  thức cần học: Use case\, khóa ngoại/index\, REST\, JSON Schema\,
-  ownership\nNghiệm thu: Vẽ luồng policy → agent → event\; fixtur
- e mẫu được TV2/TV3 review\; mỗi MVP có acceptance ID\nReview/test
-  và cập nhật PROGRESS trước khi đóng task.\nChi tiết: https://
- github.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
+ ốt SRS\, ERD\, API và traceability PDF\; docs/SRS.md\, ERD.md\; contrac
+ ts/schemas\nKiến thức cần học: Use case\, privacy schema\, REST\,
+  JSON Schema\, ownership\nNghiệm thu: Map F1–F5/NT1–NT6\; fixture đ
+ ược TV2/TV3 review\; mỗi yêu cầu có acceptance ID\nReview/test v
+ à cập nhật PROGRESS trước khi đóng task.\nChi tiết: https://gi
+ thub.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
 URL:https://github.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
@@ -28,7 +28,7 @@ CATEGORIES:TV1
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-kickoff@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261026
 DTEND;VALUE=DATE:20261027
@@ -45,7 +45,7 @@ CATEGORIES:NHOM
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-a02@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261029
 DTEND;VALUE=DATE:20261031
@@ -66,21 +66,21 @@ CATEGORIES:TV1
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-a03@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261031
 DTEND;VALUE=DATE:20261103
-SUMMARY:[OGK][TV1][A03] Login/logout/me\, session cookie\, CSRF\, children
-  ownership
+SUMMARY:[OGK][TV1][A03] Login/logout/me\, role parent/child-view/admin\, CS
+ RF\, ownership
 DESCRIPTION:Phụ trách: TV1\nTuần: 1–2\nƯớc lượng: 10 giờ tro
  ng khoảng triển khai này (không phải làm cả ngày).\nHạn hoà
  n thành: 02/11/2026\, hết ngày UTC+7.\nPhụ thuộc: A02\nĐầu ra:
-  Login/logout/me\, session cookie\, CSRF\, children ownership\nKiến th
- ức cần học: Password hashing\, cookie HttpOnly/Secure/SameSite\, CSR
- F\, authorization\nNghiệm thu: Hai gia đình không đọc/sửa chéo\
- ; logout mất session\; request thiếu CSRF bị từ chối\nReview/tes
- t và cập nhật PROGRESS trước khi đóng task.\nChi tiết: https:/
- /github.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
+  Login/logout/me\, role parent/child-view/admin\, CSRF\, ownership\nKiến
+  thức cần học: Argon2id/scrypt\, cookie 12h\, lockout/rate limit\, I
+ DOR\nNghiệm thu: Mật khẩu ≥10\; 5 lỗi khóa 15 phút\; hai gia
+  đình không đọc chéo\; logout server-side\; thiếu CSRF bị từ
+  chối\nReview/test và cập nhật PROGRESS trước khi đóng task.\n
+ Chi tiết: https://github.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
 URL:https://github.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
@@ -88,7 +88,7 @@ CATEGORIES:TV1
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-m1@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261101
 DTEND;VALUE=DATE:20261102
@@ -104,18 +104,19 @@ CATEGORIES:NHOM
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-a04@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261103
 DTEND;VALUE=DATE:20261105
-SUMMARY:[OGK][TV1][A04] Enrollment một lần\, device token/revoke
+SUMMARY:[OGK][TV1][A04] Enrollment 8 ký tự/10 phút\, access token 15 ph
+ út + refresh/revoke
 DESCRIPTION:Phụ trách: TV1\nTuần: 2\nƯớc lượng: 7 giờ trong kh
  oảng triển khai này (không phải làm cả ngày).\nHạn hoàn th
  ành: 04/11/2026\, hết ngày UTC+7.\nPhụ thuộc: A03\nĐầu ra: Enro
- llment một lần\, device token/revoke\; server/app/auth\nKiến thức
-  cần học: Random token\, hash secret\, expiry\, rate limiting\, transa
- ction\nNghiệm thu: Mã hết hạn/dùng lại bị từ chối\; token
-  revoke không dùng được\; không lộ token log\nReview/test và c
+ llment 8 ký tự/10 phút\, access token 15 phút + refresh/revoke\nKiế
+ n thức cần học: Random token\, hash secret\, expiry\, rate limiting\
+ , transaction\nNghiệm thu: Mã hết hạn/dùng lại bị từ chối\
+ ; refresh/revoke đúng device\; không lộ token log\nReview/test và c
  ập nhật PROGRESS trước khi đóng task.\nChi tiết: https://github
  .com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
 URL:https://github.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
@@ -125,20 +126,21 @@ CATEGORIES:TV1
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-a05@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261105
 DTEND;VALUE=DATE:20261107
-SUMMARY:[OGK][TV1][A05] Policy snapshot và optimistic concurrency
+SUMMARY:[OGK][TV1][A05] Policy snapshot versioned + HMAC/chữ ký\, optimi
+ stic concurrency
 DESCRIPTION:Phụ trách: TV1\nTuần: 2\nƯớc lượng: 7 giờ trong kh
  oảng triển khai này (không phải làm cả ngày).\nHạn hoàn th
  ành: 06/11/2026\, hết ngày UTC+7.\nPhụ thuộc: A01\,A04\nĐầu ra:
-  Policy snapshot và optimistic concurrency\; API agent policy\nKiến th
- ức cần học: Versioning\, immutable snapshot\, conflict handling\, sc
- hema validation\nNghiệm thu: Hai lần sửa cùng version có một con
- flict\; agent khác không đọc được policy\nReview/test và cập n
- hật PROGRESS trước khi đóng task.\nChi tiết: https://github.com/k
- hiem2007/ogk/blob/main/docs/PHAN_CONG.md
+  Policy snapshot versioned + HMAC/chữ ký\, optimistic concurrency\nKi
+ ến thức cần học: Canonical serialization\, integrity\, immutable s
+ napshot\, schema validation\nNghiệm thu: Sửa một byte bị agent t
+ ừ chối\; conflict giữ bản hợp lệ trước\nReview/test và c
+ ập nhật PROGRESS trước khi đóng task.\nChi tiết: https://github
+ .com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
 URL:https://github.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
@@ -146,7 +148,7 @@ CATEGORIES:TV1
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-a06@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261107
 DTEND;VALUE=DATE:20261110
@@ -167,7 +169,7 @@ CATEGORIES:TV1
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-m2@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261108
 DTEND;VALUE=DATE:20261109
@@ -183,7 +185,7 @@ CATEGORIES:NHOM
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-a07@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261110
 DTEND;VALUE=DATE:20261112
@@ -204,20 +206,21 @@ CATEGORIES:TV1
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-a08@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261112
 DTEND;VALUE=DATE:20261114
-SUMMARY:[OGK][TV1][A08] Command queue/delivery/ACK/audit
+SUMMARY:[OGK][TV1][A08] Command queue/ACK/audit + WebSocket notify bắt bu
+ ộc
 DESCRIPTION:Phụ trách: TV1\nTuần: 3\nƯớc lượng: 7 giờ trong kh
  oảng triển khai này (không phải làm cả ngày).\nHạn hoàn th
  ành: 13/11/2026\, hết ngày UTC+7.\nPhụ thuộc: A04\,A06\nĐầu ra:
-  Command queue/delivery/ACK/audit\; contracts command\nKiến thức cần
-  học: At-least-once delivery\, allowlist\, expiry\, idempotent effects\n
- Nghiệm thu: Lệnh hết hạn không chạy muộn\; delivered khác ex
- ecuted\; không nhận shell command\nReview/test và cập nhật PROGRES
- S trước khi đóng task.\nChi tiết: https://github.com/khiem2007/ogk/
- blob/main/docs/PHAN_CONG.md
+  Command queue/ACK/audit + WebSocket notify bắt buộc\nKiến thức c
+ ần học: At-least-once\, allowlist\, expiry\, idempotency\, reconnect\n
+ Nghiệm thu: Lệnh khẩn <5 giây\; polling fallback\; delivered khác
+  executed\; không shell\nReview/test và cập nhật PROGRESS trước k
+ hi đóng task.\nChi tiết: https://github.com/khiem2007/ogk/blob/main/do
+ cs/PHAN_CONG.md
 URL:https://github.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
@@ -225,7 +228,7 @@ CATEGORIES:TV1
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-m3@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261115
 DTEND;VALUE=DATE:20261116
@@ -241,20 +244,21 @@ CATEGORIES:NHOM
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-a09@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261116
 DTEND;VALUE=DATE:20261119
-SUMMARY:[OGK][TV1][A09] Report ngày/tuần\, audit\, retention
+SUMMARY:[OGK][TV1][A09] Report parent/child-view\, audit\, retention 90 ng
+ ày và delete-all
 DESCRIPTION:Phụ trách: TV1\nTuần: 4\nƯớc lượng: 10 giờ trong k
  hoảng triển khai này (không phải làm cả ngày).\nHạn hoàn th
  ành: 18/11/2026\, hết ngày UTC+7.\nPhụ thuộc: A06\,A07\nĐầu ra:
-  Report ngày/tuần\, audit\, retention\; server/app/services\nKiến th
- ức cần học: Aggregation\, timezone\, interval splitting\, pagination
- \, redaction\nNghiệm thu: Không cộng đôi app/máy\; tách nửa đ
- êm\; cleanup 30/90 ngày có test\; ownership reports\nReview/test và c
- ập nhật PROGRESS trước khi đóng task.\nChi tiết: https://github
- .com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
+  Report parent/child-view\, audit\, retention 90 ngày và delete-all\nKi
+ ến thức cần học: Aggregation\, timezone\, pagination\, redaction\,
+  distributed deletion\nNghiệm thu: Top 10\; không cộng đôi\; cleanu
+ p 90 ngày\; xóa server + agent cache\; ownership\nReview/test và cập
+  nhật PROGRESS trước khi đóng task.\nChi tiết: https://github.com
+ /khiem2007/ogk/blob/main/docs/PHAN_CONG.md
 URL:https://github.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
@@ -262,20 +266,21 @@ CATEGORIES:TV1
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-a10@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261119
 DTEND;VALUE=DATE:20261123
-SUMMARY:[OGK][TV1][A10] DNS rules và proxy
+SUMMARY:[OGK][TV1][A10] DNS proxy\, 6 nhóm/≥200 mục\, protected allowl
+ ist\, SafeSearch
 DESCRIPTION:Phụ trách: TV1\nTuần: 4\nƯớc lượng: 14 giờ trong k
  hoảng triển khai này (không phải làm cả ngày).\nHạn hoàn th
  ành: 22/11/2026\, hết ngày UTC+7.\nPhụ thuộc: A01\,B01\nĐầu ra:
-  DNS rules và proxy\; agent/dns\; fixture domain .test\nKiến thức c
- ần học: DNS UDP/TCP\, A/AAAA/CNAME\, TTL\, IDNA\, suffix boundary\, ca
- che/timeout\nNghiệm thu: Unit domain boundary\; proxy upstream giả\; c
- hặn self-forward\; không query log toàn bộ\nReview/test và cập nh
- ật PROGRESS trước khi đóng task.\nChi tiết: https://github.com/kh
- iem2007/ogk/blob/main/docs/PHAN_CONG.md
+  DNS proxy\, 6 nhóm/≥200 mục\, protected allowlist\, SafeSearch\nKi
+ ến thức cần học: DNS UDP/TCP\, IDNA/suffix\, cache\, SafeSearch ma
+ pping\, dataset provenance\nNghiệm thu: ≥95%/50\, 0 false positive/20
+  giáo dục\; nslookup/browser SafeSearch\; không full query log\nReview
+ /test và cập nhật PROGRESS trước khi đóng task.\nChi tiết: htt
+ ps://github.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
 URL:https://github.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
@@ -283,7 +288,7 @@ CATEGORIES:TV1
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-m4@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261122
 DTEND;VALUE=DATE:20261123
@@ -300,20 +305,21 @@ CATEGORIES:NHOM
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-a11@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261123
 DTEND;VALUE=DATE:20261125
-SUMMARY:[OGK][TV1][A11] HTTPS lab\, env\, backup/restore
+SUMMARY:[OGK][TV1][A11] TLS 1.2+\, certificate pinning\, env\, backup/resto
+ re
 DESCRIPTION:Phụ trách: TV1\nTuần: 5\nƯớc lượng: 7 giờ trong kh
  oảng triển khai này (không phải làm cả ngày).\nHạn hoàn th
- ành: 24/11/2026\, hết ngày UTC+7.\nPhụ thuộc: A09\nĐầu ra: HTTP
- S lab\, env\, backup/restore\; deploy và scripts\nKiến thức cần h
- ọc: Reverse proxy/TLS\, Docker Compose\, SQLite backup consistency\nNghi
- ệm thu: Một worker\; agent verify certificate\; backup phục hồi đ
- ược trên DB thử\nReview/test và cập nhật PROGRESS trước khi
-  đóng task.\nChi tiết: https://github.com/khiem2007/ogk/blob/main/docs
- /PHAN_CONG.md
+ ành: 24/11/2026\, hết ngày UTC+7.\nPhụ thuộc: A09\nĐầu ra: TLS
+  1.2+\, certificate pinning\, env\, backup/restore\nKiến thức cần h
+ ọc: Reverse proxy/TLS\, pin rotation\, Docker Compose\, SQLite backup\nN
+ ghiệm thu: Pin sai bị từ chối\; không disable verify\; backup ph
+ ục hồi được\nReview/test và cập nhật PROGRESS trước khi đ
+ óng task.\nChi tiết: https://github.com/khiem2007/ogk/blob/main/docs/PH
+ AN_CONG.md
 URL:https://github.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
@@ -321,7 +327,7 @@ CATEGORIES:TV1
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-a12@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261125
 DTEND;VALUE=DATE:20261129
@@ -343,15 +349,15 @@ CATEGORIES:TV1
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-rc@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261128
 DTEND;VALUE=DATE:20261129
 SUMMARY:[OGK][NHÓM] Chốt bản nghiệm thu và kiểm thử VM sạch
 DESCRIPTION:TV1: A11/A12. TV2: B09/B10. TV3: C08/C09\; chốt evidence C10.
-  Nghiệm thu HTTPS\, cài/gỡ và DNS restore\, E2E\, đo mục tiêu la
- b 70s/10s/3s. Chỉ sửa lỗi ảnh hưởng bàn giao\; không thêm t
- ính năng.\nhttps://github.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
+  Nghiệm thu HTTPS/pinning\, cài-gỡ/DNS restore\, SafeSearch\, E2E và
+  ngưỡng 60s/5s/±30s. Chỉ sửa lỗi ảnh hưởng bàn giao.\nhttp
+ s://github.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
 URL:https://github.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
@@ -359,16 +365,16 @@ CATEGORIES:NHOM
 END:VEVENT
 BEGIN:VEVENT
 UID:ogk-20261026-m5@calendar.ogk.local
-DTSTAMP:20261026T090822Z
+DTSTAMP:20261105T141122Z
 SEQUENCE:0
 DTSTART;VALUE=DATE:20261129
 DTEND;VALUE=DATE:20261130
 SUMMARY:[OGK][NHÓM] DEADLINE: demo và bàn giao OpenGuard Kids
-DESCRIPTION:Hạn cuối dự án: hết ngày 29/11/2026 (UTC+7). Cả nh
- óm chạy demo 8–10 phút\, nộp source/build\, hướng dẫn cài/g
- ỡ\, test report/evidence và video. TV3 hoàn tất C10. Ghi đúng ph
- ần chưa làm/chưa chạy. Extension chuyển sau deadline.\nhttps://gi
- thub.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
+DESCRIPTION:Hạn cuối: hết 29/11/2026 (UTC+7). Nộp source/build\, RE
+ ADME cài trong 15 phút\, ≥15 unit + 5 integration\, BaoCao 20–30 tra
+ ng\, PDF M1–M6\, PRIVACY/THREATMODEL/AI_USAGE và video 5–7 phút ti
+ ếng Việt. Ghi đúng phần chưa làm/chưa chạy.\nhttps://github.c
+ om/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
 URL:https://github.com/khiem2007/ogk/blob/main/docs/PHAN_CONG.md
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT

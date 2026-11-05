@@ -4,9 +4,9 @@
 
 Phân công đề xuất cho **3 sinh viên, 5 tuần, trung bình 27,2 giờ/người/tuần**. Chưa có tên và năng lực thực tế;
 thay TV1–TV3 bằng tên/MSSV/GitHub handle khi nhóm thống nhất. Lịch đã chốt: **26/10/2026–29/11/2026**, ngày địa phương UTC+7. Ngày kết thúc từng task là hạn hoàn thành trong ngày đó.
-Đã đối chiếu file kế hoạch và 9 ảnh. Kế hoạch hiện hành tại PROJECT_BRIEF.md; bản nguồn ban đầu được lưu riêng tại reference/Ke-hoach-va-prompt-OGK.original.md. Deadline 5 tuần theo yêu cầu người dùng thay lịch 7/8 tuần ban đầu.
-Mỗi dòng là một task có thể chuyển thành GitHub issue; **trạng thái sản phẩm chưa được cập nhật sau lần khởi tạo bộ khung**.
-Ước lượng bao gồm học, viết code, test và tài liệu đầu việc; không phải cam kết thời gian. Giữ 136 giờ/người (408 giờ nhóm), gồm phần review/dự phòng: rút lịch còn 5 tuần làm tăng cường độ lên trung bình 27,2 giờ/người/tuần. Các phần mở rộng nằm sau deadline.
+Đã đối chiếu [PDF đề bài chính thức ngày 05/11/2026](DoAn_UD_QL_SD_PC_TreEm.pdf), ma trận truy vết và 9 ảnh prototype. PDF quy định thời lượng 6 tuần; deadline nội bộ 5 tuần 26/10–29/11 vẫn giữ theo lựa chọn trước của người dùng để hoàn thành sớm.
+Mỗi dòng là một task có thể chuyển thành GitHub issue; trạng thái thực tế xem `PROGRESS.md` (hiện mới có B01 spike và B02 core/tests).
+Ước lượng bao gồm học, code, test và tài liệu; không phải cam kết. Quỹ cũ vẫn là 136 giờ/người (408 giờ nhóm), nhưng PDF đã đưa WebSocket, SafeSearch, security và M1–M6 thành bắt buộc nên nhóm phải re-estimate; không được ngầm coi các yêu cầu mới là đã nằm trọn trong số giờ cũ.
 
 | Thành viên | Vai trò chính | Sở hữu file | Người review chính |
 |---|---|---|---|
@@ -21,17 +21,17 @@ Không giao toàn bộ test cho TV3: ai viết module phải viết unit/integra
 
 | Mã | Tuần | Bắt đầu | Deadline | Giờ | Phụ thuộc | Công việc và đầu ra | Kiến thức cần học | Bài thực hành / tiêu chí nghiệm thu |
 |---|---|---|---|---:|---|---|---|---|
-| A01 | 1 | 26/10/2026 | 28/10/2026 | 12 | — | Chốt SRS, ERD và API; docs/SRS.md, ERD.md; contracts/schemas | Use case, khóa ngoại/index, REST, JSON Schema, ownership | Vẽ luồng policy → agent → event; fixture mẫu được TV2/TV3 review; mỗi MVP có acceptance ID |
+| A01 | 1 | 26/10/2026 | 28/10/2026 | 12 | — | Chốt SRS, ERD, API và traceability PDF; docs/SRS.md, ERD.md; contracts/schemas | Use case, privacy schema, REST, JSON Schema, ownership | Map F1–F5/NT1–NT6; fixture được TV2/TV3 review; mỗi yêu cầu có acceptance ID |
 | A02 | 1 | 29/10/2026 | 30/10/2026 | 7 | A01 | Khởi tạo FastAPI/SQLAlchemy/Alembic, migration; server/app/db | Python typing, dependency injection, transaction, WAL/busy_timeout | Tạo DB trống bằng migration; kiểm tra khóa ngoại và concurrent read/write |
-| A03 | 1–2 | 31/10/2026 | 02/11/2026 | 10 | A02 | Login/logout/me, session cookie, CSRF, children ownership | Password hashing, cookie HttpOnly/Secure/SameSite, CSRF, authorization | Hai gia đình không đọc/sửa chéo; logout mất session; request thiếu CSRF bị từ chối |
-| A04 | 2 | 03/11/2026 | 04/11/2026 | 7 | A03 | Enrollment một lần, device token/revoke; server/app/auth | Random token, hash secret, expiry, rate limiting, transaction | Mã hết hạn/dùng lại bị từ chối; token revoke không dùng được; không lộ token log |
-| A05 | 2 | 05/11/2026 | 06/11/2026 | 7 | A01,A04 | Policy snapshot và optimistic concurrency; API agent policy | Versioning, immutable snapshot, conflict handling, schema validation | Hai lần sửa cùng version có một conflict; agent khác không đọc được policy |
+| A03 | 1–2 | 31/10/2026 | 02/11/2026 | 10 | A02 | Login/logout/me, role parent/child-view/admin, CSRF, ownership | Argon2id/scrypt, cookie 12h, lockout/rate limit, IDOR | Mật khẩu ≥10; 5 lỗi khóa 15 phút; hai gia đình không đọc chéo; logout server-side; thiếu CSRF bị từ chối |
+| A04 | 2 | 03/11/2026 | 04/11/2026 | 7 | A03 | Enrollment 8 ký tự/10 phút, access token 15 phút + refresh/revoke | Random token, hash secret, expiry, rate limiting, transaction | Mã hết hạn/dùng lại bị từ chối; refresh/revoke đúng device; không lộ token log |
+| A05 | 2 | 05/11/2026 | 06/11/2026 | 7 | A01,A04 | Policy snapshot versioned + HMAC/chữ ký, optimistic concurrency | Canonical serialization, integrity, immutable snapshot, schema validation | Sửa một byte bị agent từ chối; conflict giữ bản hợp lệ trước |
 | A06 | 2–3 | 07/11/2026 | 09/11/2026 | 8 | A04 | Heartbeat và event ingestion/ACK; server/app/services | HTTP retry, UUID, unique constraint, idempotency, batch bounds | Lost ACK rồi gửi lại không nhân event; ACK chỉ sau commit; 180 giây mất liên lạc |
 | A07 | 3 | 10/11/2026 | 11/11/2026 | 9 | A05,A06 | Request approve/reject và grant scope/expiry | State machine, atomic update, race condition, UTC/local date | Approve đồng thời chỉ có một grant; mở app không vượt manual lock/quota tổng |
-| A08 | 3 | 12/11/2026 | 13/11/2026 | 7 | A04,A06 | Command queue/delivery/ACK/audit; contracts command | At-least-once delivery, allowlist, expiry, idempotent effects | Lệnh hết hạn không chạy muộn; delivered khác executed; không nhận shell command |
-| A09 | 4 | 16/11/2026 | 18/11/2026 | 10 | A06,A07 | Report ngày/tuần, audit, retention; server/app/services | Aggregation, timezone, interval splitting, pagination, redaction | Không cộng đôi app/máy; tách nửa đêm; cleanup 30/90 ngày có test; ownership reports |
-| A10 | 4 | 19/11/2026 | 22/11/2026 | 14 | A01,B01 | DNS rules và proxy; agent/dns; fixture domain .test | DNS UDP/TCP, A/AAAA/CNAME, TTL, IDNA, suffix boundary, cache/timeout | Unit domain boundary; proxy upstream giả; chặn self-forward; không query log toàn bộ |
-| A11 | 5 | 23/11/2026 | 24/11/2026 | 7 | A09 | HTTPS lab, env, backup/restore; deploy và scripts | Reverse proxy/TLS, Docker Compose, SQLite backup consistency | Một worker; agent verify certificate; backup phục hồi được trên DB thử |
+| A08 | 3 | 12/11/2026 | 13/11/2026 | 7 | A04,A06 | Command queue/ACK/audit + WebSocket notify bắt buộc | At-least-once, allowlist, expiry, idempotency, reconnect | Lệnh khẩn <5 giây; polling fallback; delivered khác executed; không shell |
+| A09 | 4 | 16/11/2026 | 18/11/2026 | 10 | A06,A07 | Report parent/child-view, audit, retention 90 ngày và delete-all | Aggregation, timezone, pagination, redaction, distributed deletion | Top 10; không cộng đôi; cleanup 90 ngày; xóa server + agent cache; ownership |
+| A10 | 4 | 19/11/2026 | 22/11/2026 | 14 | A01,B01 | DNS proxy, 6 nhóm/≥200 mục, protected allowlist, SafeSearch | DNS UDP/TCP, IDNA/suffix, cache, SafeSearch mapping, dataset provenance | ≥95%/50, 0 false positive/20 giáo dục; nslookup/browser SafeSearch; không full query log |
+| A11 | 5 | 23/11/2026 | 24/11/2026 | 7 | A09 | TLS 1.2+, certificate pinning, env, backup/restore | Reverse proxy/TLS, pin rotation, Docker Compose, SQLite backup | Pin sai bị từ chối; không disable verify; backup phục hồi được |
 | A12 | 5 | 25/11/2026 | 28/11/2026 | 12 | A01–A11 | Integration/security review, báo cáo backend và hỗ trợ demo | Threat modeling theo ownership/CSRF/replay, evidence, Git review | Chạy T01/T02/T08–T11; nộp log/commit; giải thích được luồng TCP/HTTPS/ACK |
 
 Tổng đầu việc TV1: **110 giờ**, dành thêm **26 giờ** cho review, họp tích hợp và dự phòng; tổng kế hoạch **136 giờ/người**.
@@ -42,13 +42,13 @@ Tổng đầu việc TV1: **110 giờ**, dành thêm **26 giờ** cho review, h�
 |---|---|---|---|---:|---|---|---|---|
 | B01 | 1 | 26/10/2026 | 29/10/2026 | 16 | — | Spike SID/session, foreground/idle, IPC ACL, lock/disconnect, DNS backup; scripts/spikes | Windows Session 0, LocalSystem, SID, WTS, named pipe ACL, quyền admin | VM có phụ huynh/trẻ; đọc đúng phiên; phân biệt locked/disconnected; ghi ADR D03/D04 |
 | B02 | 1 | 30/10/2026 | 01/11/2026 | 8 | A01,B01 | Thiết kế core models, Decision, clock; agent/core | Dataclass/typing, dependency inversion, wall-clock vs monotonic, fake clock | Core import không cần Windows; test fixture decision với reason_code thống nhất |
-| B03 | 2 | 02/11/2026 | 04/11/2026 | 12 | B02, contract policy A01 (28/10); tích hợp A05 sau 06/11 | Engine lịch/quota/app/manual lock/grant; simulator | Interval [start,end), timezone, precedence, scope/expiry | Fake clock test biên lịch, quota nhóm, grant hết hạn; không dùng sleep thật |
-| B04 | 2 | 05/11/2026 | 07/11/2026 | 10 | B02,B03 | Counter, SQLite checkpoint/restart, midnight/clock rollback | Foreground intervals, idle/sleep, persistence, high-water date | T03–T07/T17; app ≤ tổng máy; sleep không tăng; sai số crash đo theo checkpoint |
-| B05 | 2–3 | 08/11/2026 | 10/11/2026 | 13 | B01,B03,B04 | Service/helper lifecycle, IPC validation và process enforcement | pywin32, psutil SID/session filtering, bounded IPC, recovery/backoff | T12/T16; không kill process phụ huynh/hệ thống; helper restart có giới hạn |
-| B06 | 3 | 11/11/2026 | 13/11/2026 | 10 | A04–A06,B04 | Enroll client, heartbeat, policy cache, outbox/retry; agent/core | HTTP timeout/backoff/jitter, SQLite outbox, atomic apply | Offline 10 phút vẫn áp dụng; reconnect không nhân event; invalid policy giữ bản trước |
-| B07 | 3 | 14/11/2026 | 15/11/2026 | 9 | A07,A08,B05,B06 | Command executor và request queue, manual lock/grant persist | Durable intent/result, idempotency, expiry, IPC ACK | T09–T11/T18; crash/replay không kéo dài grant; xác nhận session trước ACK |
-| B08 | 4 | 16/11/2026 | 18/11/2026 | 6 | B05,C05 | Tích hợp Tray/helper, degraded counters và minh bạch telemetry | IPC schema, stale timestamp, thread boundary, measured vs estimated | Tray chết không giả usage=0; không gán app khi thiếu foreground; UI báo degraded |
-| B09 | 4–5 | 20/11/2026 | 25/11/2026 | 12 | B01; chuẩn bị theo DNS contract từ 20/11; tích hợp sau A10 (22/11) | DNS adapter preflight/backup/apply/rollback/restore; agent/windows | DHCP/static, IPv4/IPv6, adapter identity, port 53, loopback | T14/T15: proxy healthy trước đổi; restore đúng DHCP/static; lỗi có rollback |
+| B03 | 2 | 02/11/2026 | 04/11/2026 | 12 | B02, A01/A05 contract | Engine lịch 7×48/quota/app/manual lock/grant; warnings/grace; simulator | Interval [start,end), timezone, precedence, 10/5/1 phút, grace 60s | Quota 3 phút; slot 30 phút; khóa trong 5s sau grace; fake clock không sleep thật |
+| B04 | 2 | 05/11/2026 | 07/11/2026 | 10 | B02,B03 | Counter/checkpoint/restart, midnight/clock rollback và server-time check | Foreground intervals, idle>5m, persistence, monotonic, high-water | Sai số ≤±30s/giờ; lùi 3h không tăng quota và phát clock event; sleep không tăng |
+| B05 | 2–3 | 08/11/2026 | 10/11/2026 | 13 | B01,B03,B04 | Service/helper, IPC, app enforcement theo name+SHA-256 | pywin32, psutil SID/session/hash, bounded IPC, SCM recovery | Không thu window title; đổi tên app vẫn nhận hash; không kill parent/system; helper restart bounded |
+| B06 | 3 | 11/11/2026 | 13/11/2026 | 10 | A04–A06,B04 | Enroll/token refresh, heartbeat 60s, signed policy cache, outbox | TLS pinning, HMAC/signature verify, backoff/jitter, DPAPI, server-time skew | Pin/policy sai bị reject; offline áp policy; reconnect không nhân event; secret có ACL |
+| B07 | 3 | 14/11/2026 | 15/11/2026 | 9 | A07,A08,B05,B06 | WebSocket command notify + polling fallback, request queue, lock/grant persist | Reconnect, durable intent/result, idempotency, expiry, IPC ACK | Lệnh khẩn <5s; crash/replay không kéo dài grant; session xác nhận trước ACK |
+| B08 | 4 | 16/11/2026 | 18/11/2026 | 6 | B05,C05 | Tích hợp Tray luôn hiện, degraded counter và minh bạch telemetry | IPC schema, stale timestamp, measured vs estimated, anti-stalkerware | Không icon thì dừng; không title/URL; Tray chết không giả usage=0; UI báo degraded |
+| B09 | 4–5 | 20/11/2026 | 25/11/2026 | 12 | B01; A10 contract | DNS adapter preflight/backup/apply/rollback/restore + SafeSearch | DHCP/static, IPv4/IPv6, port 53, loopback, SafeSearch DNS | Restore đúng; rollback; nslookup/browser SafeSearch; dữ liệu adapter không lộ secret |
 | B10 | 5 | 26/11/2026 | 28/11/2026 | 12 | B05–B09 | Build PyInstaller, install/uninstall; VM sạch và báo cáo Windows | Packaging, SCM, scheduled logon helper, ACL file, recovery | Cài → enroll → restart → uninstall; DNS về gốc; ghi ca chưa chạy đúng thực trạng |
 
 Tổng đầu việc TV2: **108 giờ**, dành thêm **28 giờ** cho review, họp tích hợp và dự phòng; tổng kế hoạch **136 giờ/người**.
@@ -57,16 +57,16 @@ Tổng đầu việc TV2: **108 giờ**, dành thêm **28 giờ** cho review, h�
 
 | Mã | Tuần | Bắt đầu | Deadline | Giờ | Phụ thuộc | Công việc và đầu ra | Kiến thức cần học | Bài thực hành / tiêu chí nghiệm thu |
 |---|---|---|---|---:|---|---|---|---|
-| C01 | 1 | 26/10/2026 | 28/10/2026 | 12 | — | Phân tích 9 ảnh, user flow, acceptance UI và test plan | UX states, wireframe, actor/use case, traceability | Map từng màn hình đến API/FR; vùng mờ ghi giả định; kế hoạch T01–T18 |
+| C01 | 1 | 26/10/2026 | 28/10/2026 | 12 | — | Phân tích PDF chính thức + 9 ảnh, user flow, acceptance UI/test plan | NT1–NT6, UX states, actor/use case, traceability | Map F1–F5 và T01–T23; ảnh chỉ là prototype; không hạ yêu cầu PDF |
 | C02 | 1 | 29/10/2026 | 01/11/2026 | 9 | A01,C01 | Khởi tạo React TS Vite, layout, API client và CI frontend | TypeScript, React state/hooks, fetch, routing, CSS responsive | Build thật; có loading/empty/error; cookie/CSRF tích hợp cùng origin |
 | C03 | 2 | 05/11/2026 | 07/11/2026 | 10 | C02,A03,A04 | Login, children/devices/pairing, selector; dashboard/src/pages | Forms, controlled input, session expiry, async error handling | Ghép thiết bị thật; mã hết hạn có lỗi rõ; đổi child/device không lẫn dữ liệu |
-| C04 | 2–3 | 08/11/2026 | 10/11/2026 | 12 | C03,A05 | Form lịch/quota/app và hiển thị server/applied version | Validation, optimistic concurrency, immutable UI state | Không lưu lịch trùng/qua nửa đêm; conflict có thông báo; lưu khác đã áp dụng |
-| C05 | 3 | 11/11/2026 | 15/11/2026 | 15 | C01,B02,B05 contract | Tray PySide6: trạng thái, lịch, cảnh báo, request, trang minh bạch | Qt signals/slots, event loop/thread, system tray, IPC client | UI không block khi mất IPC; không có device token; cảnh báo 5/1 phút; offline queued |
+| C04 | 2–3 | 08/11/2026 | 10/11/2026 | 12 | C03,A05 | Form lịch 7×48/quota/app, integrity và server/applied version | Validation slot 30 phút, optimistic concurrency, immutable UI | Không lịch trùng/qua nửa đêm; conflict rõ; policy integrity/applied khác saved |
+| C05 | 3 | 11/11/2026 | 15/11/2026 | 15 | C01,B02,B05 contract | Tray luôn hiện: trạng thái, cảnh báo 10/5/1, grace, request/báo chặn nhầm, minh bạch | Qt tray lifecycle, IPC, ngôn ngữ cấp 1, NT1–NT4 | Không icon thì agent dừng; không device token/title/URL; offline queued; lý do + người đặt luật |
 | C06 | 4 | 16/11/2026 | 18/11/2026 | 10 | A07,A08,B07,C03 | Màn hình request/command; luồng duyệt, khóa/hủy, miễn thời gian | State machine UI, polling, scope/expiry, retry feedback | queued/delivered/executed/failed/expired khác nhau; không toast thành công trước ACK |
-| C07 | 4 | 19/11/2026 | 21/11/2026 | 10 | A09,C03 | Tổng quan và báo cáo tuần/ngày từ API; dashboard | Date/timezone formatting, chart data, missing/delayed telemetry | Số liệu khớp event dedup; đổi ngày/thiết bị đúng; không hard-code Bé An |
-| C08 | 5 | 23/11/2026 | 25/11/2026 | 8 | A10,B09 contract,C04 | UI lọc web, domain/category/schedule và help | Domain normalization, allowlist/blocklist, giới hạn DNS/DoH | Lưu/đọc rule thật; giải thích Hạn chế=lịch; không bật SafeSearch giả |
+| C07 | 4 | 19/11/2026 | 21/11/2026 | 10 | A09,C03 | Parent + child-view: ngày/tuần, top 10, block/request, audit | Role UI, timezone, chart, missing telemetry, data deletion | Trẻ xem cùng dữ liệu/audit; delete-all có trạng thái; không hard-code Bé An |
+| C08 | 5 | 23/11/2026 | 25/11/2026 | 8 | A10,B09 contract,C04 | UI 6 nhóm/domain/category/protected allowlist/SafeSearch và help | Dataset ≥200, DNS/DoH limits, source/provenance | Rule thật; SafeSearch chỉ báo bật sau nslookup/browser pass; protected allowlist không bị override |
 | C09 | 5 | 26/11/2026 | 28/11/2026 | 10 | C04,C06,C07,C08 | Playwright E2E, accessibility cơ bản, test lỗi mạng | Locator ổn định, web E2E, fixture isolation, keyboard navigation | Luồng policy → applied → request → duyệt → grant; không bỏ assertion khi lỗi |
-| C10 | 5 | 23/11/2026 | 29/11/2026 | 12 | Soạn hướng dẫn từ 23/11; chốt evidence sau C09/B10 (28/11) | Hướng dẫn người dùng, video/demo 8–10 phút, test evidence | Technical writing, test report, trình bày kiến trúc và giới hạn | VM demo thật; ảnh/log gắn commit; bản báo cáo tách đã làm/chưa làm |
+| C10 | 5 | 23/11/2026 | 29/11/2026 | 12 | Soạn từ 23/11; chốt sau C09/B10 | BaoCao.docx, M1–M6 PDF, PRIVACY/THREATMODEL/AI_USAGE, video 5–7 phút | Technical writing, traceability, evidence, % đóng góp | Đủ deliverable PDF trang 11; video tiếng Việt; README cài máy sạch ≤15 phút |
 
 Tổng đầu việc TV3: **108 giờ**, dành thêm **28 giờ** cho review, họp tích hợp và dự phòng; tổng kế hoạch **136 giờ/người**.
 
@@ -89,7 +89,7 @@ B09 chỉ chuẩn bị adapter/rollback theo contract ngày 20–22/11; tích h�
 Mỗi cuối tuần đối chiếu đầu ra với mốc chung. Nếu nguồn lực thực tế vẫn chỉ 15–20 giờ/người/tuần,
 nhóm có 225–300 giờ trong 5 tuần và phải chốt giảm phạm vi; lịch hiện tại giữ đủ MVP 408 giờ.
 Không bỏ ownership/CSRF, offline dedup, SID/session hoặc DNS rollback để bù tiến độ.
-Giữ DNS danh sách thủ công; không thêm WebSocket, SafeSearch, 2FA, CSV, template tuổi trong 5 tuần.
+Không được cắt WebSocket, SafeSearch, bảng phân loại ≥200 mục, policy integrity, retention 90 ngày hoặc tài liệu M1–M6 vì đây là yêu cầu bắt buộc. Có thể hoãn 2FA, PDF/CSV export, template tuổi, proxy HTTP(S)/WFP và installer đẹp.
 
 Xem [lịch gửi nhóm và cách nhập Calendar](calendar/README.md).
 
@@ -142,13 +142,23 @@ TV3 trình bày UX, luồng E2E, kết quả thử và giới hạn. Cả ba ph�
 vì sao DNS không đo thời gian website và vì sao delivered chưa phải executed.
 
 Mỗi task hoàn thành khi có file/code, test phù hợp, một review, tài liệu cập nhật và evidence;
-ca chưa chạy ghi “chưa chạy”. Chỉ tiêu lab cần đo: policy ≤70s, nhận command ≤10s, xử lý app mẫu ≤3s.
+ca chưa chạy ghi “chưa chạy”. Ngưỡng chính thức: policy ≤60s, command khẩn <5s, khóa ngoài lịch ≤5s, usage ±30s/giờ; M4 dùng ≥30 mẫu/phép đo.
+
+### Phân công phụ lục kỹ thuật mạng M1–M6
+
+| Mục | Người viết chính | Người review/bằng chứng |
+|---|---|---|
+| M1 luồng DNS + capture | TV1 | TV2 chạy capture Windows |
+| M2 so sánh hosts/DNS/HTTP(S)/WFP | TV1 | TV2 review giới hạn hệ thống |
+| M3 ít nhất 7 bypass | TV2 | TV1/TV3 kiểm chứng, chỉ dùng miền an toàn |
+| M4 CPU/RAM/DNS p50-p95/policy latency | TV2 | TV1 cung cấp server/upstream, ≥30 mẫu |
+| M5 mất mạng/server down/agent kill | TV2 | TV3 đối chiếu trạng thái UI |
+| M6 monotonic/server-time/clock skew | TV2 | TV1 cung cấp timestamp heartbeat |
 
 ## Việc mở rộng — chưa tính trong 408 giờ
 
 | Việc | Chủ trì | Điều kiện bắt đầu |
 |---|---|---|
-| WebSocket notify + polling fallback | TV1/TV2 | Outbox/command qua retry đã ổn định |
-| SafeSearch/YouTube adapter | TV1/TV2; TV3 UI | DNS MVP/restore pass, có môi trường kiểm thử cụ thể |
 | Template tuổi preview, CSV | TV3/TV1 | E2E MVP pass; CSV có kiểm tra injection |
-| 2FA và installer đẹp | TV1 / TV2 | Sau deadline 29/11/2026; không nằm trong lịch 5 tuần |
+| 2FA, YouTube Restricted Mode và installer đẹp | TV1 / TV2 | Sau deadline 29/11/2026; không nằm trong lịch 5 tuần |
+| Proxy HTTP(S) hoặc WFP | TV1/TV2 | Chỉ làm khi MVP và M1–M6 đã pass; không TLS interception tùy tiện |

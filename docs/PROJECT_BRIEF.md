@@ -1,10 +1,10 @@
 # Kế hoạch đồ án và bộ prompt coding agent — Người Bạn Đồng Hành (OGK)
 
-> Cập nhật 26/10/2026 theo yêu cầu người dùng: kế hoạch hiện hành là **5 tuần, 26/10–29/11/2026**. Chi tiết từng task và deadline xem [PHAN_CONG.md](PHAN_CONG.md); lịch gửi nhóm tại [calendar/README.md](calendar/README.md). [Bản nguồn trước cập nhật](reference/Ke-hoach-va-prompt-OGK.original.md).
+> Cập nhật 05/11/2026 theo [đề bài chính thức](DoAn_UD_QL_SD_PC_TreEm.pdf) và [ma trận truy vết](REQUIREMENTS_TRACEABILITY.md). Đề bài quy định thời lượng môn học 6 tuần; kế hoạch nội bộ hiện hành vẫn là **5 tuần, 26/10–29/11/2026** theo lựa chọn trước đó của người dùng. Chi tiết task xem [PHAN_CONG.md](PHAN_CONG.md).
 
 ## 1. Cơ sở và giả định
 
-Tài liệu được xây dựng từ 9 ảnh người dùng cung cấp: 3 ảnh đầu mô tả kiến trúc; 6 ảnh sau thể hiện dashboard demo. Một số vùng ảnh bị mờ hoặc che, vì vậy các chi tiết không đọc rõ không được xem là yêu cầu đã xác nhận.
+Nguồn yêu cầu ưu tiên là PDF 12 trang `DoAn_UD_QL_SD_PC_TreEm.pdf`, xuất ngày 05/11/2026. Chín ảnh trước đó tiếp tục dùng làm tham chiếu prototype UI/kiến trúc, nhưng không được hạ hoặc thay thế yêu cầu bắt buộc trong PDF.
 
 Giả định để lập kế hoạch: 3 sinh viên, 5 tuần (26/10–29/11/2026), trung bình 27,2 giờ/người/tuần; demo với 1 máy Windows được quản lý, 1 phụ huynh và 1 trẻ. Hệ thống dữ liệu vẫn hỗ trợ nhiều gia đình và thiết bị, nhưng bản đầu chỉ hỗ trợ 1 phiên trẻ hoạt động trên mỗi thiết bị; tổng hạn mức tính riêng từng thiết bị. Máy trẻ dùng tài khoản Windows standard user; tài khoản quản trị thuộc phụ huynh. Nếu cần tổng hạn mức chung cho nhiều máy hoặc Fast User Switching đầy đủ, phải mở rộng thiết kế.
 
@@ -12,7 +12,7 @@ Tên đề tài gợi ý: “Xây dựng hệ thống quản lý thời gian và
 
 Mục tiêu nghiệm thu: phụ huynh đặt quy tắc trên web; agent nhận, lưu và thực thi trên máy Windows; trẻ thấy quy tắc và có thể xin ngoại lệ; báo cáo được tạo từ sự kiện thực tế.
 
-## 2. Yêu cầu đọc được từ ảnh
+## 2. Nguồn yêu cầu và nguyên tắc bắt buộc
 
 | Nguồn | Nội dung | Cách triển khai trong đồ án |
 |---|---|---|
@@ -20,12 +20,23 @@ Mục tiêu nghiệm thu: phụ huynh đặt quy tắc trên web; agent nhận, 
 | Ảnh 1–3 | FastAPI, SQLAlchemy, SQLite; HTTPS; heartbeat 60 giây | Giữ kiến trúc; SQLite WAL cho quy mô lab |
 | Ảnh 1–3 | Chính sách, sự kiện, lệnh, báo cáo, audit | API có phân quyền sở hữu, phiên bản chính sách, hàng đợi bền vững |
 | Ảnh 4–5 | Tổng quan thời gian, giải trí, yêu cầu; lịch tuần | Dashboard có bộ chọn trẻ/thiết bị, trạng thái đồng bộ |
-| Ảnh 6 | Lọc theo miền/danh mục, SafeSearch; không giải mã HTTPS | DNS proxy có danh sách mẫu; SafeSearch là phần mở rộng cần kiểm thử riêng |
+| Ảnh 6 + PDF F2 | Lọc theo miền/danh mục, SafeSearch; không giải mã HTTPS | DNS proxy + SafeSearch qua DNS là bắt buộc; chỉ báo bật sau khi test `nslookup` và trình duyệt |
 | Ảnh 7 | Xin thêm thời gian hoặc mở ứng dụng; phụ huynh duyệt | Request → quyết định → ngoại lệ tạm thời → agent xác nhận |
 | Ảnh 8 | Nghỉ giới hạn 15 phút, bỏ giới hạn hôm nay, khóa ngay | Định nghĩa rõ từng lệnh ở mục 5; không thực thi lệnh shell tùy ý |
 | Ảnh 9 | Hồ sơ tuổi 6–8, 9–11, 12–14; ghi nhận đã giải thích | Template chính sách có preview; phụ huynh xác nhận trước khi áp dụng |
 
 Các mức thời gian theo tuổi trong ảnh chỉ là cấu hình mẫu sản phẩm, không phải khuyến nghị y tế. Ảnh là prototype, không phải bằng chứng các tính năng bên trong đã hoạt động.
+
+Sáu nguyên tắc chính thức phải truy vết xuyên suốt code/test/UI:
+
+1. **NT1 - trẻ biết mình đang được hỗ trợ:** Tray luôn hiện; thông báo khi agent chạy; không chạy ẩn.
+2. **NT2 - tối thiểu dữ liệu:** chỉ tên app, tên miền cấp hai, thời lượng và timestamp; không URL đầy đủ, tiêu đề cửa sổ, keylog, nội dung hay screenshot.
+3. **NT3 - trẻ có tiếng nói:** xin thêm giờ và báo chặn nhầm phải có phản hồi.
+4. **NT4 - giải thích được:** block phải nêu lý do và ai đặt luật.
+5. **NT5 - minh bạch hai chiều:** trẻ xem cùng báo cáo và audit thay đổi luật của mình.
+6. **NT6 - an toàn tuyệt đối:** protected allowlist cho cổng trường, 111 và cứu hộ; khóa máy không chặn chức năng khẩn cấp của hệ điều hành.
+
+Không hiện thực chế độ ẩn/rootkit/chống gỡ kiểu mã độc; không đọc nội dung riêng tư; không gửi dữ liệu cho bên thứ ba; không thử trên trẻ thật hoặc máy người khác khi chưa có đồng ý.
 
 ## 3. Phạm vi
 
@@ -40,17 +51,18 @@ Các mức thời gian theo tuổi trong ảnh chỉ là cấu hình mẫu sản
 7. Lệnh khóa phiên, miễn giới hạn thời gian 15 phút, miễn giới hạn đến hết hôm nay; có trạng thái và thời hạn lệnh.
 8. Cache chính sách, bộ đếm và outbox SQLite; mất mạng vẫn thực thi; kết nối lại không gửi trùng.
 9. Báo cáo ngày/tuần, tổng theo ứng dụng/nhóm, số lần chặn, nhật ký thay đổi.
-10. DNS proxy chặn theo miền; dữ liệu danh mục mẫu có ghi rõ nguồn và phạm vi; cài/gỡ có khôi phục DNS.
+10. DNS proxy chặn theo miền; 6 nhóm, bảng phân loại tối thiểu 200 mục và protected allowlist; cài/gỡ có khôi phục DNS.
+11. SafeSearch qua DNS và lệnh khẩn dưới 5 giây qua WebSocket; polling là fallback bền vững.
+12. Policy version + HMAC/chữ ký; child-view; retention/xóa dữ liệu; privacy/threat/AI documentation theo đề bài.
 
 ### Có sau khi luồng chính đã ổn định
 
-- WebSocket để đánh thức agent nhận lệnh nhanh; polling dự phòng.
-- SafeSearch và YouTube Restricted Mode trên môi trường trình duyệt đã kiểm thử.
-- Mẫu chính sách độ tuổi, 2FA phụ huynh, xuất CSV, bộ cài thuận tiện.
+- Mẫu chính sách độ tuổi, 2FA phụ huynh, xuất PDF/CSV, gợi ý 20-20-20 và bộ cài thuận tiện.
+- DoH endpoint/browser policy nâng cao, proxy HTTP(S) hoặc WFP.
 
 ### Ngoài phạm vi bản đầu
 
-- Chụp màn hình, webcam, keylogger, đọc tin nhắn, giám sát bí mật.
+- Chụp màn hình, webcam, keylogger, đọc tin nhắn, tiêu đề cửa sổ/URL đầy đủ, giám sát bí mật.
 - Điều khiển desktop, shell từ xa, thực thi mã tải từ server.
 - Driver/kernel, chống vượt quyền administrator, chặn tuyệt đối VPN/DoH, phân loại web bằng AI.
 - Windows/macOS/Linux đồng thời; đồng bộ quota chung nhiều máy khi offline.
@@ -116,7 +128,7 @@ ogk/
 | App usage | Khoảng đo gán cho foreground executable; một thời điểm tối đa một app; thời gian app là tập con thời gian máy |
 | Video/học không nhập liệu | Idle có thể làm thiếu số liệu; ghi rõ hạn chế; cho cấu hình ngưỡng, chưa tự nhận diện media |
 | Timezone | Lưu UTC; chia ngày/lịch theo timezone thiết bị do phụ huynh đặt, mặc định Asia/Ho_Chi_Minh |
-| Lịch | Khoảng [start,end); UI bản đầu không cho khung qua nửa đêm, yêu cầu tách 2 khung; kiểm tra trùng |
+| Lịch | Ma trận 7×48, độ phân giải 30 phút; khoảng [start,end); không cho khung qua nửa đêm, yêu cầu tách 2 khung; kiểm tra trùng |
 | Hạn mức | Tổng máy/ngày + nhóm app/ngày; quota nhóm cộng từ foreground app, không cộng các tiến trình nền |
 | Ưu tiên | Khóa thủ công đang hiệu lực → chặn app/miền tường minh → điều kiện thời gian sau khi xét ngoại lệ hợp lệ → cho phép |
 | Ngoại lệ thời gian | Chỉ thay đổi scope được duyệt; không gỡ chặn nội dung hoặc app tường minh |
@@ -125,10 +137,10 @@ ogk/
 | Miễn 15 phút | Bỏ kiểm tra lịch/quota thời gian trong 15 phút từ lúc agent áp dụng; lệnh phải được nhận trước expires_at; không bỏ content/app block |
 | Miễn hôm nay | Bỏ lịch/quota đến nửa đêm timezone cấu hình; ghi rõ đây là miễn giới hạn, không buộc trẻ nghỉ |
 | Khóa ngay | Ghi trạng thái manual_lock bền vững và yêu cầu khóa phiên; khi login/unlock lại vẫn kiểm tra manual_lock; phụ huynh có lệnh hủy khóa được audit |
-| Hết quota | Cảnh báo trước 5 phút/1 phút; khóa phiên khi hết; thông báo lại khi unlock; đây không phải lớp bảo vệ như kiosk/driver |
-| Quy tắc thay đổi | Snapshot bất biến có version tăng; agent áp dụng nguyên tử, giữ bản trước nếu snapshot sai |
+| Hết quota | Cảnh báo trước 10/5/1 phút; grace 60 giây cho trẻ lưu bài; khóa phiên khi hết; thông báo lại khi unlock |
+| Quy tắc thay đổi | Snapshot bất biến có version tăng và HMAC/chữ ký; agent áp dụng nguyên tử, từ chối bản bị sửa và giữ bản hợp lệ trước |
 | Online | Heartbeat 60 giây; quá 180 giây chưa nhận thì “mất liên lạc”, không suy ra máy đã tắt |
-| Polling | Poll command khoảng 5 giây có jitter; policy check theo heartbeat; WebSocket chỉ tăng tốc |
+| Lệnh khẩn | WebSocket phải giúp khóa/mở/cộng 15 phút đạt dưới 5 giây; command queue + polling jitter là fallback, expiry/idempotency vẫn là nguồn đúng |
 | Offline | Giữ policy gần nhất, counter và ngoại lệ còn hạn; queue request/event; không tự duyệt yêu cầu |
 | Đồng hồ đổi | Phát hiện sai lệch wall-clock so với monotonic trong một lần chạy; không reset quota; lưu high-water local date và báo clock_suspect; không nhận có thể chống chỉnh giờ tuyệt đối qua reboot |
 | Chưa có policy | Enrollment chưa hoàn tất thì hiển thị “chưa được quản lý”; không bật DNS hệ thống hoặc chặn máy |
@@ -146,9 +158,9 @@ Trong code, policy engine trả Decision(allowed, reason_code, rule_id, remainin
 | users | id, email unique, password_hash, created_at |
 | children | id, owner_id, display_name, age_band, timezone |
 | devices | id, child_id, windows_sid, name, token_hash, last_seen, applied_policy_version, revoked_at |
-| enrollment_codes | owner_id, code_hash, expires_at, consumed_at; dùng một lần, giới hạn thử |
-| policies | id, child_id/device_id, version, document_json, created_by, created_at; snapshot |
-| app_catalog | id, owner_id, display_name, normalized_exe_path/name, category |
+| enrollment_codes | owner_id, code_hash, expires_at, consumed_at; mã 8 ký tự, dùng một lần, hết hạn 10 phút, giới hạn thử |
+| policies | id, child_id/device_id, version, document_json, integrity_tag, created_by, created_at; snapshot ký HMAC/chữ ký |
+| app_catalog | id, owner_id, display_name, normalized_exe_path/name, executable_sha256, category |
 | usage_intervals | event_id unique, device_id, start/end UTC, app_id, active_seconds, sequence, boot_id |
 | device_events | event_id unique, device_id, type, observed_at, reason_code, rule_id; dữ liệu tối thiểu |
 | requests | id, device_id, type, payload, reason, status, decided_by, expires_at |
@@ -174,16 +186,18 @@ Local agent DB: policy_cache, usage_checkpoints, outbox_events, pending_requests
 | Báo cáo | GET /reports/daily, GET /reports/weekly; filter child/device/date |
 | Audit | GET /audit; phân trang và filter |
 
-Phụ huynh dùng session cookie HttpOnly, Secure khi HTTPS, SameSite và CSRF protection; phát triển dùng proxy cùng origin. Agent dùng bearer token riêng từng thiết bị, chỉ truy cập tài nguyên của thiết bị đó. Không cho agent chọn device_id của gia đình khác bằng payload. Rate-limit login/enroll; giới hạn batch/event size; API trả validation error nhất quán. Không dùng JWT nếu chưa có nhu cầu rõ ràng.
+Phụ huynh dùng Argon2id/scrypt, mật khẩu tối thiểu 10 ký tự; khóa 15 phút sau 5 lần sai và rate-limit theo IP. Session cookie HttpOnly, Secure, SameSite=Lax, hạn 12 giờ, logout hủy server-side và CSRF cho mọi thao tác ghi. Ba role là `parent`, `child-view`, `admin`; ownership phải kiểm ở tầng query. Agent dùng access token 15 phút + refresh token gắn device/revoke được. Không cho agent chọn device_id của gia đình khác bằng payload.
 
-Event envelope: schema_version, event_id(UUID), device_id do server gắn theo token, boot_id, sequence, observed_at UTC, type, payload. Server ACK danh sách event_id sau commit; dedup bởi device_id/event_id. Outbox retry exponential backoff+jitter và batch nhỏ. Báo cáo tổng hợp từ interval đã dedup, chia interval qua nửa đêm. Không cộng chồng tổng máy và app thành hai lần usage.
+Event nghiệp vụ chỉ chứa `ts`, `device_id`, `child_id`, `type`, `subject`, `duration_sec`, `policy_id`; `subject` là tên app hoặc miền cấp hai. `type` thuộc allowlist chính thức. Envelope kỹ thuật được thêm `schema_version`, `event_id`, `boot_id`, `sequence` để dedup nhưng không được thêm URL/title/nội dung. Server ACK sau commit; retry exponential backoff+jitter và batch nhỏ. Báo cáo tổng hợp từ interval đã dedup, chia qua nửa đêm và không cộng chồng tổng máy/app.
+
+Kênh agent dùng TLS 1.2+ và certificate pinning. Trường nhạy cảm mã hóa AES-GCM; key lấy từ environment/DPAPI, không hardcode. Local DB/token trong ProgramData có ACL chỉ SYSTEM/Administrators được ghi. Chính sách hết hạn sau N ngày offline còn chờ ADR D09 chọn fail-open/fail-closed.
 
 Command lifecycle: queued → delivered → executed/failed/expired. delivered không có nghĩa đã chạy. Mỗi command có id, expires_at, loại allowlist và kết quả ACK. Service lưu intent/result để xử lý replay và crash; các hiệu ứng thiết kế idempotent: set trạng thái hoặc upsert grant theo command_id. Không hứa “exactly once” cho mọi tác động ngoài DB. Dashboard phân biệt policy server version và applied version.
 
 ## 7. Lọc web: phạm vi thực tế
 
 - Chặn theo domain; chuẩn hóa lowercase, bỏ dấu chấm cuối, xử lý IDNA; rule example.com khớp example.com và subdomain hợp lệ, không khớp badexample.com.
-- Category là tập domain được quản lý thủ công/import có nguồn và ngày cập nhật. Demo dùng domain thử nghiệm an toàn; không mở website độc hại để chứng minh.
+- Category là tập domain có nguồn/ngày cập nhật, gồm 6 nhóm chính thức và tối thiểu 200 mục; mặc định cho trẻ 6–11 tuổi. Bộ test chỉ dùng miền công khai an toàn, `.test` hoặc miền nhóm sở hữu.
 - Chế độ allowlist hoặc blocklist; ngoại lệ domain tường minh ưu tiên category, nhưng hard-block do phụ huynh đặt vẫn thắng allow ngoại lệ thông thường. Viết truth table riêng trước khi code.
 - Nhãn “Hạn chế” phải nghĩa là chỉ mở trong lịch web cấu hình, không tuyên bố đo quota thời gian duyệt miền bằng DNS. DNS lookup không đo được thời gian ở trên một trang.
 - DNS proxy listen 127.0.0.1:53, và ::1 nếu có cấu hình IPv6; UDP + TCP; có upstream timeout/cache, tránh trỏ upstream về chính mình. Chỉ quản lý adapter được chọn; kiểm tra xung đột port 53.
@@ -191,7 +205,7 @@ Command lifecycle: queued → delivered → executed/failed/expired. delivered k
 - DNS chỉ thấy miền, không thấy đường dẫn HTTPS. Không cài CA để giải mã HTTPS. Trình duyệt thường có thể chỉ hiện lỗi DNS, không bảo đảm redirect thành trang “bị chặn” có giải thích; Tray cung cấp thông báo lý do theo sự kiện chặn gần nhất.
 - Không lưu query log toàn bộ; báo cáo chỉ giữ tổng số lần chặn theo category/rule. Unknown domain không đưa vào lịch sử duyệt web.
 - DoH, VPN, cache DNS và kết nối đã mở có thể làm quy tắc không có tác dụng ngay. Demo ghi rõ cấu hình trình duyệt và làm sạch cache có kiểm soát. Không tuyên bố chặn tuyệt đối.
-- SafeSearch/YouTube phải có adapter riêng và test trên môi trường hỗ trợ; không tạo công tắc UI báo “đã bật” khi chỉ lưu boolean.
+- SafeSearch qua DNS là bắt buộc và phải test bằng `nslookup` + trình duyệt; không tạo công tắc UI báo “đã bật” khi chỉ lưu boolean. YouTube Restricted Mode là adapter riêng nếu thực hiện.
 
 ## 8. Màn hình và luồng sử dụng
 
@@ -202,7 +216,7 @@ Command lifecycle: queued → delivered → executed/failed/expired. delivered k
 3. Tổng quan: dùng hôm nay/tổng quota, giải trí còn lại, request chờ, biểu đồ tuần, lịch hôm nay.
 4. Ứng dụng & Khung giờ: rule theo nhóm/app, lịch tuần, quota, cảnh báo xung đột, preview chính sách.
 5. Lọc web: category, danh sách miền, chế độ, thời khóa biểu cho “Hạn chế”; giải thích giới hạn DNS.
-6. Báo cáo: chọn ngày/tuần và thiết bị; trạng thái dữ liệu chưa đồng bộ/thiếu telemetry.
+6. Báo cáo: ngày/tuần, top 10 app/domain, số block/request; child-view xem cùng dữ liệu và audit thay đổi luật; trạng thái thiếu telemetry rõ ràng.
 7. Yêu cầu: lý do, thời lượng/app, trạng thái; approve có scope/expiry rõ ràng.
 8. Điều khiển: miễn 15 phút, miễn hôm nay, khóa/hủy khóa; hiển thị queued/delivered/executed/failed/expired.
 9. Hồ sơ & Độ tuổi: 3 template như ảnh; xem trước thay đổi; giải thích cho trẻ; lưu phiên bản bản giải thích.
@@ -211,7 +225,7 @@ Phong cách demo: nền sáng, sidebar trái, xanh lá nhạt, card bo góc, ch�
 
 ### Máy trẻ
 
-Tray hiển thị rõ phần mềm đang hoạt động, số phút còn lại, lịch, trạng thái server, lý do hạn chế, nút xin thêm giờ/xin mở app và trạng thái gửi/chờ/được duyệt. Chế độ offline vẫn cho tạo request trong queue nhưng ghi “chưa gửi”. Đóng cửa sổ Tray không đồng nghĩa tắt service. Màn hình minh bạch mô tả dữ liệu được thu thập và không thu thập.
+Tray hiển thị rõ phần mềm đang hoạt động, số phút còn lại, lịch, trạng thái server, lý do và người đặt luật, nút xin thêm giờ/báo chặn nhầm và trạng thái phản hồi. Chế độ offline vẫn cho tạo request trong queue nhưng ghi “chưa gửi”. Đóng cửa sổ không tắt service nhưng biểu tượng tray phải luôn hiện; nếu không thể hiện biểu tượng, agent tự dừng thay vì chạy ẩn. Màn hình minh bạch dùng ngôn ngữ cấp 1 và child-view xem báo cáo/audit của mình.
 
 ## 9. Lịch thực hiện 5 tuần
 
@@ -226,7 +240,7 @@ Tray hiển thị rõ phần mềm đang hoạt động, số phút còn lại, 
 Tổng kế hoạch **136 giờ/người**, **408 giờ toàn nhóm**, gồm review và dự phòng; trung bình
 27,2 giờ/người/tuần. Chi tiết 32 đầu việc, ngày bắt đầu/hạn hoàn thành và phụ thuộc xem PHAN_CONG.md.
 Ngày 28/11 chốt release candidate, 29/11 nghiệm thu/demo/bàn giao. Không thêm tính năng mới tuần 5.
-Giữ MVP, dùng domain list thủ công; WebSocket/SafeSearch/2FA/CSV/template tuổi/installer đẹp sau deadline.
+Giữ đủ yêu cầu bắt buộc trong PDF, gồm WebSocket, SafeSearch và bảng phân loại 200 mục. Chỉ 2FA, PDF/CSV export, template tuổi, proxy HTTP(S)/WFP và installer đẹp là extension.
 Nếu nhóm chỉ có 15–20 giờ/người/tuần, phải thống nhất giảm phạm vi vì 5 tuần chỉ có 225–300 giờ nhóm.
 
 ## 10. Kiểm thử và định nghĩa hoàn thành
@@ -251,23 +265,28 @@ Nếu nhóm chỉ có 15–20 giờ/người/tuần, phải thống nhất giả
 | T16 | Tray chết, IPC message sai SID hoặc payload | Service báo degraded; không thực thi lệnh trái phép |
 | T17 | Chỉnh giờ lùi và đổi ngày | Không reset quota để được dùng lại; báo clock_suspect; ghi giới hạn qua reboot |
 | T18 | Khóa ngay rồi unlock/login lại | Manual lock vẫn hiệu lực cho đến khi phụ huynh hủy |
+| T19 | Lịch 7×48, quota 3 phút, cảnh báo 10/5/1 và grace 60 giây | Chuyển đúng slot; khóa sau grace trong 5 giây; cảnh báo đủ |
+| T20 | Đổi tên executable test nhưng giữ cùng file/hash | Vẫn nhận diện bằng SHA-256 và hiện lý do block |
+| T21 | Bộ 50 miền an toàn + 20 miền giáo dục; SafeSearch | Block ≥95%, 0 false positive giáo dục; `nslookup` và browser xác nhận SafeSearch |
+| T22 | Sửa một byte policy hoặc dùng cert không khớp pin | Agent từ chối policy/kết nối, giữ bản hợp lệ và báo lỗi |
+| T23 | Dữ liệu quá 90 ngày và nút xóa toàn bộ | Auto-delete đúng hạn; server và agent cache cùng xóa |
 
-Mục tiêu demo khi lab khỏe: policy mới applied trong 70 giây; command polling được tiếp nhận trong 10 giây; process mẫu bị xử lý trong 3 giây. Đây là mục tiêu cần đo, không phải bảo đảm thời gian thực. Process polling có thể để app khởi chạy ngắn trước khi đóng; không quảng cáo như OS launch prevention. Chỉ thử chặn executable dành riêng cho demo, không thử kết thúc phần mềm có dữ liệu chưa lưu.
+Ngưỡng chính thức: policy có hiệu lực trong 60 giây; lệnh khẩn dưới 5 giây; ngoài lịch khóa trong 5 giây; usage sai số ≤±30 giây/giờ. M4 đo CPU/RAM, DNS p50/p95 và policy latency với tối thiểu 30 mẫu mỗi phép đo. Process polling có thể để app khởi chạy ngắn trước khi đóng; không quảng cáo như OS launch prevention. Chỉ thử executable demo không chứa dữ liệu cần lưu.
 
-Hoàn thành khi: API và UI dùng dữ liệu thật; unit/integration pass; manual Windows checklist có bằng chứng; cài/gỡ được; không có secret trong repo; README có lệnh chạy và giới hạn; các mục chưa hỗ trợ được ghi đúng thực trạng. Mock Windows trên Linux chỉ kiểm tra logic, không chứng minh API Windows hoạt động.
+Hoàn thành khi: API/UI dùng dữ liệu thật; tối thiểu 15 unit test và 5 integration scenario pass, kèm ảnh; manual Windows/network có bằng chứng; cài/gỡ được trên Windows sạch; README cài trong 15 phút; không có secret; các mục chưa hỗ trợ ghi đúng thực trạng. Mock không chứng minh Windows API/network acceptance.
 
 ## 11. Tài liệu nộp và kịch bản bảo vệ
 
-Tài liệu: SRS/use case; architecture và ADR; ERD/data dictionary; API; policy truth table; test plan/report; hướng dẫn cài/gỡ và vận hành; hạn chế; hướng phát triển. README dẫn đến từng tài liệu. Báo cáo phân biệt rõ phần đã triển khai, đã test thực tế và chỉ mới đề xuất.
+Sản phẩm nộp bắt buộc: `/agent`, `/server`, `/dashboard`, `/tests`; `docs/BaoCao.docx` 20–30 trang; `docs/BaoCaoKyThuatMang.pdf` đủ M1–M6; `docs/PRIVACY.md`; `docs/THREATMODEL.md`; `docs/AI_USAGE.md`; `demo/video.mp4`; README cài trong 15 phút. Xem [ma trận truy vết](REQUIREMENTS_TRACEABILITY.md).
 
-Demo 8–10 phút:
+Video/demo 5–7 phút, có phụ đề hoặc thuyết minh tiếng Việt:
 1. Giới thiệu vấn đề, nguyên tắc minh bạch và kiến trúc 3 phần.
 2. Ghép Windows device bằng mã một lần; mở Tray.
-3. Phụ huynh đặt hạn mức demo 2 phút và chặn app thử nghiệm; chỉ ra version applied.
+3. Phụ huynh đặt hạn mức demo 3 phút và chặn app thử nghiệm; chỉ ra version/integrity/applied.
 4. Mở app, hiện lý do; thời gian máy/app đi lên từ hoạt động thật.
 5. Trẻ xin thêm 1 phút; phụ huynh duyệt; số phút cập nhật một lần.
 6. Dừng kết nối mạng, chứng minh rule vẫn tồn tại; kết nối lại và xem outbox đồng bộ.
-7. Chặn domain thử nghiệm, xem lý do trên Tray; nêu giới hạn DoH/HTTPS.
+7. Chặn domain thử nghiệm, xác nhận SafeSearch, xem lý do trên Tray; nêu giới hạn DoH/HTTPS.
 8. Khóa phiên bằng lệnh từ dashboard, chỉ ra ACK executed sau xác nhận session; hủy khóa bằng tài khoản phụ huynh.
 9. Xem báo cáo và audit; kết thúc bằng bằng chứng cài/gỡ và giới hạn đã biết.
 
@@ -290,7 +309,7 @@ Các ràng buộc bắt buộc:
 - Parent session và device token tách biệt; kiểm tra ownership từng tài nguyên.
 - HTTPS môi trường tích hợp, không tắt certificate verification; secret lấy từ môi trường/kho bảo vệ, không hard-code.
 - Offline cache/outbox bền vững, dedup event, policy version, expiry lệnh, grant idempotent.
-- Chỉ thu thập dữ liệu tối thiểu trong brief; không screenshot/keylogger/full URL, không shell từ xa.
+- Chỉ thu thập dữ liệu tối thiểu trong brief; không screenshot/keylogger/full URL/window title, không shell từ xa hoặc chế độ ẩn.
 - Luôn có simulator/dry-run mặc định cho phần ảnh hưởng OS. Script đổi DNS/cài service/chặn app phải có preflight, rollback và tài liệu; không tự chạy lên máy phát triển ngoài Windows VM lab đã được chỉ định.
 - Không tuyên bố test Windows pass nếu chỉ chạy mock hoặc đang ở Linux.
 - Không làm UI “thành công” khi backend chưa ACK; dữ liệu seed chỉ nằm trong chế độ demo.
@@ -306,7 +325,7 @@ Mỗi milestone cập nhật docs/PROGRESS.md: phần đã làm, phần chưa l�
 
 ```text
 Áp dụng Prompt 0. Thực hiện milestone 1, chưa xây toàn bộ sản phẩm.
-1. Viết docs/SRS.md: actors, use cases, MVP/extension, FR/NFR có ID và acceptance criteria. Truy vết với 9 ảnh; đánh dấu chi tiết ảnh không đọc rõ.
+1. Viết docs/SRS.md: actors, use cases, MVP/extension, FR/NFR có ID và acceptance criteria. Truy vết với PDF chính thức trước, 9 ảnh chỉ làm prototype tham khảo.
 2. Viết docs/ARCHITECTURE.md, docs/ERD.md, docs/POLICY_RULES.md và ADR về service/helper, quota theo thiết bị, auth, offline, DNS.
 3. Chốt truth table cho lịch/quota/app block/manual lock/grant và web allowlist/blocklist/category, interval [start,end), day boundary.
 4. Tạo spike tối thiểu trong scripts/spikes để chạy thủ công trên Windows VM: đọc SID/session, foreground/idle ở helper; trao đổi named pipe ACL; khóa phiên và xác nhận WTS state; kiểm tra/sao lưu/khôi phục DNS một adapter. Mặc định dry-run, không cài hoặc đổi mạng tự động. Trong `scripts/spikes`, kiểm tra thêm khả năng khóa phiên trực tiếp từ Service (Session 0) bằng `win32ts.WTSDisconnectSession` và khả năng kiểm tra trạng thái phiên (`WTSActive`, `WTSDisconnected`) qua `WTSEnumerateSessions` để làm phương án dự phòng khi Tray UI bị tắt..
@@ -318,8 +337,8 @@ Mỗi milestone cập nhật docs/PROGRESS.md: phần đã làm, phần chưa l�
 
 ```text
 Áp dụng Prompt 0 và docs/PROJECT_BRIEF.md. Dựng nền tảng server/contracts/dashboard shell/agent core, lint và test commands, CI phù hợp. Dùng FastAPI, SQLAlchemy, Alembic, SQLite WAL cho lab; chọn và pin dependency tương thích.
-Triển khai parent login/logout/me bằng server session cookie với CSRF; hash mật khẩu bằng thư viện chuẩn phù hợp; seed tài khoản demo chỉ qua lệnh riêng, mật khẩu lấy từ env hoặc tạo khi seed. Xây CRUD children, tạo enrollment code ngắn hạn một lần, agent enroll, device token riêng và revoke. Ownership scope bắt buộc.
-Tạo policy snapshot versioned và GET/PUT policy với optimistic concurrency; GET agent policy không cho token thiết bị khác đọc chéo. Sinh OpenAPI và fixture schema trong contracts.
+Triển khai parent login/logout/me bằng session cookie HttpOnly/Secure/SameSite=Lax 12 giờ với CSRF; Argon2id/scrypt, mật khẩu ≥10, khóa 15 phút sau 5 lần sai, rate-limit IP. Seed demo chỉ qua lệnh riêng. Xây role parent/child-view/admin, CRUD children, enrollment code 8 ký tự dùng một lần/10 phút, access token agent 15 phút + refresh/revoke. Ownership scope bắt buộc.
+Tạo policy snapshot versioned + HMAC/chữ ký và GET/PUT với optimistic concurrency; agent từ chối policy bị sửa. GET agent policy không cho token thiết bị khác đọc chéo. Sinh OpenAPI và fixture schema trong contracts.
 Nghiệm thu: migration từ DB trống; duplicate enrollment không thành công; code hết hạn không dùng được; device revoke mất quyền; hai gia đình không truy cập chéo; cookie/CSRF và input validation có test. Chạy test server và cập nhật README/PROGRESS. Chưa làm Windows enforcement.
 ```
 
@@ -336,8 +355,8 @@ Test có fake clock cho biên lịch, overlapping/invalid schedule, midnight, ca
 
 ```text
 Áp dụng Prompt 0. Dùng core đã có, triển khai adapter pywin32/psutil và Tray PySide6. Service chạy LocalSystem; helper/Tray chạy trong session SID trẻ. Named pipe ACL và validation session; không có generic shell/execute endpoint. Tạo service lifecycle start/stop/recovery và helper startup có tài liệu.
-Helper lấy foreground executable, idle và session notifications; service xác thực/bounds-check telemetry, tính thời gian và lưu. Service áp dụng app rules chỉ trong SID/session được quản lý. Không kết thúc process hệ thống hoặc tài khoản khác. Thêm executable test vô hại, dry-run mặc định, cảnh báo trước khi thực thi thật.
-Tray hiển thị usage, remaining, schedule, online/degraded, reason; cảnh báo 5 phút/1 phút và trang minh bạch. Lệnh khóa gửi đến helper interactive, xác nhận session locked trước ACK executed. Manual lock bền vững qua unlock/restart, hỗ trợ clear từ command hợp lệ. Không coi overlay là cơ chế bảo vệ OS.
+Helper lấy foreground executable (không lấy window title), idle và session notifications; service xác thực telemetry. App rule đối chiếu tên process + SHA-256 và chỉ áp dụng đúng SID/session. Không kết thúc process hệ thống/tài khoản khác. Thêm executable test vô hại, dry-run mặc định.
+Tray luôn hiện khi agent chạy, thông báo khởi động; nếu không thể hiện icon thì agent tự dừng. Tray hiển thị usage, remaining, schedule, online/degraded, lý do/người đặt luật; cảnh báo 10/5/1 phút và grace 60 giây. Lệnh khóa gửi helper, xác nhận locked trước ACK. Manual lock bền vững; không coi overlay là cơ chế bảo vệ OS.
 Tạo script cài/gỡ preflight và quyền admin khi cần, không tự chạy trên host. Test logic bằng mock ở mọi OS; manual integration checklist trên Windows cho foreground/idle/lock/sleep/Tray crash/restart và account phụ huynh. Báo chính xác các ca Windows đã hoặc chưa chạy.
 - Xử lý trường hợp trẻ tắt Tray UI từ Task Manager:
   1. Service phát hiện mất heartbeat IPC trong khi session của SID trẻ vẫn `WTSActive` -> chuyển sang trạng thái `degraded` nhưng VẪN ĐẾM tổng thời gian dùng máy và VẪN CHẶN executable bị cấm qua `psutil` (lọc theo SID trẻ).
@@ -349,7 +368,7 @@ Tạo script cài/gỡ preflight và quyền admin khi cần, không tự chạy
 
 ```text
 Áp dụng Prompt 0. Hoàn thiện enrollment/config client, heartbeat 60 giây, policy atomic apply/cache, event outbox có UUID/boot_id/sequence, ACK sau DB commit, retry backoff+jitter, batch limits và dedup server.
-Triển khai command allowlist: LOCK_SESSION, CLEAR_MANUAL_LOCK, TEMPORARY_TIME_EXEMPTION, EXEMPT_UNTIL_LOCAL_DAY_END. Poll 5 giây; queued/delivered/executed/failed/expired; không chạy command quá expires_at. Persist command intent/result, dùng grant id cố định theo command_id để retry/crash không kéo dài ngoại lệ. WebSocket nếu làm chỉ là notify, reconnect không làm mất command.
+Triển khai command allowlist: LOCK_SESSION, CLEAR_MANUAL_LOCK, TEMPORARY_TIME_EXEMPTION, EXEMPT_UNTIL_LOCAL_DAY_END. WebSocket notify là bắt buộc để lệnh khẩn đạt dưới 5 giây; polling 5 giây là fallback. Giữ queued/delivered/executed/failed/expired, expiry, intent/result và grant id cố định; reconnect WebSocket không làm mất/nhân command.
 Triển khai request xin quota/app; request offline queued; parent approve/reject atomic một lần; grant scope/expiry theo brief, audit. Trẻ không được tự cấp grant. Phân biệt request được duyệt, policy/grant được nhận và được áp dụng.
 Nghiệm thu tự động: duplicate event, lost ACK, retry batch, concurrent approvals, command expired, duplicate command, crash quanh apply/ACK, policy invalid giữ bản trước. Tạo bài manual mất mạng 10 phút/reconnect. Không tuyên bố exactly-once cho tác động ngoài DB.
 ```
@@ -369,7 +388,7 @@ Seed Bé An/PC-Phong-hoc qua chế độ demo tách biệt. Test UI ít nhất c
 Áp dụng Prompt 0. Triển khai domain rule engine và DNS localhost proxy thật. Hỗ trợ UDP/TCP, A/AAAA/CNAME cần thiết, forwarding timeout, bounded cache, TTL và loop protection. Chuẩn hóa IDNA/lowercase/trailing dot, suffix boundary; chế độ allowlist/blocklist và category theo POLICY_RULES. “Hạn chế” = schedule, không suy ra web usage time từ DNS.
 Quản lý adapter được chọn trên Windows: preflight port 53, backup DNS DHCP/static IPv4/IPv6, start và health-check proxy trước khi đổi; rollback nếu lỗi; stop/uninstall khôi phục đúng trạng thái. Mặc định dry-run, không tự đổi DNS host. Chỉ bind loopback, không tạo open resolver LAN.
 Không TLS interception/full URL/query history. Sự kiện chỉ giữ rule/category/count cần báo cáo. Tray giải thích block; không hứa trình duyệt HTTPS có trang redirect tùy biến. Category fixture dùng domain test an toàn, ghi nguồn và độ bao phủ.
-Unit test domain boundary/IDNA/priority/schedule; integration proxy bằng upstream giả; manual Windows cho TCP/UDP, IPv6, cache, upstream fail, adapter change, restore DHCP/static. Đưa DoH/VPN/cache/HTTPS limitations vào UI help và README. SafeSearch/YouTube tách feature flag, chỉ bật khi có adapter đã test.
+Category có 6 nhóm, bảng tối thiểu 200 mục và bộ test an toàn theo phụ lục PDF. Unit test domain boundary/IDNA/priority/schedule; integration proxy bằng upstream giả; manual Windows cho TCP/UDP, IPv6, cache, upstream fail, adapter change, restore DHCP/static. SafeSearch DNS là bắt buộc, test bằng `nslookup` và browser; chỉ bật UI sau khi adapter pass. YouTube Restricted Mode vẫn là extension riêng.
 - Trước khi trỏ DNS của adapter về `127.0.0.1`, phải lưu lại danh sách DNS server gốc (hoặc dùng upstream cố định như `1.1.1.1:53`, `8.8.8.8:53`) làm upstream cho DNS Proxy; tuyệt đối không để DNS Proxy tự forward gói tin lại vào `127.0.0.1:53` gây vòng lặp vô hạn.
 - Sau khi áp dụng cấu hình DNS mới hoặc thay đổi rule chặn miền, gọi `ipconfig /flushdns` (khi không ở chế độ dry-run) để xóa cache DNS của Windows, đảm bảo trình duyệt áp dụng ngay quy tắc trong lúc demo.
 ```
@@ -378,7 +397,7 @@ Unit test domain boundary/IDNA/priority/schedule; integration proxy bằng upstr
 
 ```text
 Áp dụng Prompt 0. Hoàn thiện daily/weekly reports từ usage intervals dedup, timezone và split midnight; tổng theo app/category; counts chặn; missing telemetry/offline delayed indicators. Tổng app không cộng lần nữa vào tổng máy. Audit parent actions và command/grant decision, lọc secret.
-Thêm retention cấu hình (mặc định lab: usage/event 30 ngày, audit 90 ngày), cleanup có test và backup/restore DB được tài liệu hóa. DB/token local dùng ACL service/admin; secret không lộ log. Endpoint report/audit phân trang và ownership.
+Retention dữ liệu trẻ là 90 ngày; cleanup tự động có test. Nút xóa toàn bộ phải xóa server và agent cache/outbox liên quan. DB/token local dùng ACL SYSTEM/Administrators; trường nhạy cảm AES-GCM, key env/DPAPI; secret không lộ log. Parent và child-view xem cùng report/audit trong scope của trẻ.
 Rà soát CSRF, auth, enrollment brute force, batch size, IPC authorization, grant bounds, revoked token, CSV injection nếu có export. Test phải chứng minh các thuộc tính cụ thể, không chỉ snapshot. Không viết kết luận “an toàn tuyệt đối”. Báo phát hiện, sửa và những giới hạn còn lại.
 ```
 
@@ -387,7 +406,7 @@ Rà soát CSRF, auth, enrollment brute force, batch size, IPC authorization, gra
 ```text
 Áp dụng Prompt 0. Chuẩn bị lab end-to-end: server/dashboard qua HTTPS reverse proxy, cấu hình env example không secret; agent build trên Windows bằng PyInstaller; script admin install/uninstall có preflight, backup/rollback DNS, service/helper registration và removal.
 Viết README từng lệnh setup/run/test/build; docs/DEPLOYMENT.md; docs/TEST_REPORT.md; docs/DEMO_SCRIPT.md. Chạy unit/integration/frontend build, E2E web phù hợp. Trên Windows VM sạch kiểm tra cài, enroll, login child, policy apply, app/time enforcement, request approve, offline/reconnect, remote lock/clear, restart, DNS filter và uninstall restore. Không có Windows thì đánh dấu blocked, cung cấp lệnh và checklist, không ghi pass giả.
-Đo mục tiêu lab: policy <=70 giây, command tiếp nhận <=10 giây, xử lý app test <=3 giây; ghi cấu hình và kết quả thực, không sửa số liệu để đạt. Kiểm tra không còn mock trong luồng production. Tổng kết ma trận FR → implementation → test evidence; đánh dấu phần mở rộng chưa làm.
+Đo ngưỡng chính thức: policy ≤60 giây, command khẩn <5 giây, khóa ngoài lịch ≤5 giây, usage ±30 giây/giờ; M4 có ≥30 mẫu cho CPU/RAM, DNS p50/p95 và policy latency. Kiểm tra không còn mock production. Tổng kết traceability và phần chưa làm.
 ```
 
 ### Prompt 10 — Rà soát trước khi bảo vệ
@@ -395,7 +414,7 @@ Viết README từng lệnh setup/run/test/build; docs/DEPLOYMENT.md; docs/TEST_
 ```text
 Áp dụng Prompt 0. Review repository hiện tại như người chấm đồ án, chưa thêm tính năng mới. Đọc SRS, POLICY_RULES, kiến trúc, PROGRESS và test report; tìm lỗi logic nghiêm trọng và khác biệt giữa tài liệu/UI/code.
 Tập trung: Session 0/idle/lock, quota qua sleep/midnight/reboot/clock rollback, ownership, device token và IPC, duplicate grant/command/event, mất mạng, DNS restore, báo cáo cộng đôi, UI thông báo thành công sớm, hard-code/demo data. Với mỗi phát hiện nêu file, cách tái hiện, tác động và đề xuất sửa; ưu tiên blocker trước.
-Sửa các lỗi trong phạm vi đã thống nhất, thêm regression test có ý nghĩa rồi chạy kiểm tra liên quan. Cập nhật tài liệu theo trạng thái cuối; không tự tuyên bố các ca Windows chưa chạy là pass. Chuẩn bị danh sách câu hỏi hội đồng có thể hỏi và câu trả lời dựa trên implementation thật, gồm giới hạn anti-tamper, DoH/VPN, idle video và nhiều thiết bị.
+Sửa lỗi trong phạm vi, thêm regression test và chạy kiểm tra. Xác nhận tối thiểu 15 unit + 5 integration, đủ M1–M6, PRIVACY/THREATMODEL/AI_USAGE, video 5–7 phút và README cài trong 15 phút. Không tuyên bố Windows/network chưa chạy là pass. Chuẩn bị câu hỏi về anti-tamper, DoH/VPN, idle video, stalkerware và nhiều thiết bị.
 ```
 
 ## 13. Nguồn kỹ thuật cần coding agent tham khảo
