@@ -40,8 +40,9 @@ tài khoản Calendar của người dùng vì chưa có kết nối Calendar đ
 | 4 | 16/11–22/11 | 22/11 | UI E2E chính, báo cáo thật, DNS proxy |
 | 5 | 23/11–29/11 | 25/11; 28/11; **29/11** | DNS adapter/UI; VM sạch và bản nghiệm thu; demo/bàn giao |
 
-Quỹ giữ **136 giờ/người**, trung bình **27,2 giờ/người/tuần**. Tuần 5 chỉ hoàn tất
-MVP, kiểm thử và sửa lỗi; extension như SafeSearch/2FA/CSV nằm sau deadline.
+Quỹ giữ **136 giờ/người**, trung bình **27,2 giờ/người/tuần**. Tuần 5 hoàn tất
+MVP, kiểm thử và sửa lỗi. SafeSearch/WebSocket là bắt buộc theo PDF; extension còn lại gồm 2FA,
+PDF/CSV export, template tuổi, proxy HTTP(S)/WFP và installer đẹp.
 
 ## Tạo lại file sau khi sửa kế hoạch
 

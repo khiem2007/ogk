@@ -1,7 +1,17 @@
 # tests/unit
 
-Phụ trách: **Theo chủ module**.
+Phụ trách: **theo chủ module**; bộ test B02 do **TV2** phụ trách.
 
-Policy/counter fake clock, DNS boundary, service business logic; không dùng sleep thật để kiểm thử thời gian.
+Hiện có unit test cho:
 
-Trạng thái: đã tạo cấu trúc; chưa triển khai chức năng. Xem [bảng phân công](../../docs/PHAN_CONG.md).
+- `FakeClock`, `advance`, wall-clock rollback độc lập và monotonic.
+- `SystemClock` UTC/monotonic.
+- tập `ReasonCode`, khởi tạo/validation/immutability của `Decision` và `PolicySnapshot`.
+
+Chạy test:
+
+```powershell
+python -m pytest tests/unit -q
+```
+
+Test core không import Windows API và không dùng `sleep` thật.

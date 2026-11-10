@@ -54,8 +54,8 @@ def milestones():
         ('M2', date(2026, 11, 8), 'Mốc tuần 2: pairing, policy và counter', 'TV1: A03–A05 xong, A06 đang làm. TV2: B03/B04 xong, B05 đang làm. TV3: C03 xong, C04 đang làm. Nghiệm thu ghép thiết bị và policy thật, simulator/counter pass; bắt đầu service integration.'),
         ('M3', date(2026, 11, 15), 'Mốc tuần 3: agent thật, offline và commands', 'TV1: A06–A08. TV2: B05–B07. TV3: C04/C05. Nghiệm thu service/helper/Tray thật, offline 10 phút/reconnect, grant/command qua API-agent. UI duyệt/điều khiển hoàn thành 18/11.'),
         ('M4', date(2026, 11, 22), 'Mốc tuần 4: E2E chính, báo cáo và DNS proxy', 'TV1: A09/A10. TV2: B08; B09 chuẩn bị adapter/rollback theo contract. TV3: C06/C07. Nghiệm thu luồng UI–API–agent và báo cáo thật; DNS proxy unit/integration pass. Tích hợp adapter DNS/UI hoàn thành 25/11.'),
-        ('RC', date(2026, 11, 28), 'Chốt bản nghiệm thu và kiểm thử VM sạch', 'TV1: A11/A12. TV2: B09/B10. TV3: C08/C09; chốt evidence C10. Nghiệm thu HTTPS, cài/gỡ và DNS restore, E2E, đo mục tiêu lab 70s/10s/3s. Chỉ sửa lỗi ảnh hưởng bàn giao; không thêm tính năng.'),
-        ('M5', END, 'DEADLINE: demo và bàn giao OpenGuard Kids', 'Hạn cuối dự án: hết ngày 29/11/2026 (UTC+7). Cả nhóm chạy demo 8–10 phút, nộp source/build, hướng dẫn cài/gỡ, test report/evidence và video. TV3 hoàn tất C10. Ghi đúng phần chưa làm/chưa chạy. Extension chuyển sau deadline.'),
+        ('RC', date(2026, 11, 28), 'Chốt bản nghiệm thu và kiểm thử VM sạch', 'TV1: A11/A12. TV2: B09/B10. TV3: C08/C09; chốt evidence C10. Nghiệm thu HTTPS/pinning, cài-gỡ/DNS restore, SafeSearch, E2E và ngưỡng 60s/5s/±30s. Chỉ sửa lỗi ảnh hưởng bàn giao.'),
+        ('M5', END, 'DEADLINE: demo và bàn giao OpenGuard Kids', 'Hạn cuối: hết 29/11/2026 (UTC+7). Nộp source/build, README cài trong 15 phút, ≥15 unit + 5 integration, BaoCao 20–30 trang, PDF M1–M6, PRIVACY/THREATMODEL/AI_USAGE và video 5–7 phút tiếng Việt. Ghi đúng phần chưa làm/chưa chạy.'),
     ]
     return [dict(code=code, owner='NHOM', begin=day, due=day,
                  title=f'[OGK][NHÓM] {title}', description=description + '\n' + PLAN_URL)

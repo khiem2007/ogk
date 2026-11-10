@@ -1,7 +1,7 @@
 # SRS — OpenGuard Kids (OGK)
 
-**Mã công việc:** TV1-A01  
-**Trạng thái:** đề xuất để TV2/TV3 review; chưa phải mô tả implementation.  
+**Mã công việc:** TV1-A01
+**Trạng thái:** đề xuất để TV2/TV3 review; chưa phải mô tả implementation.
 **Nguồn:** [PROJECT_BRIEF.md](PROJECT_BRIEF.md), 9 prototype được liệt kê tại [reference/README.md](reference/README.md).
 
 ## 1. Mục đích và phạm vi
