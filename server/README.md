@@ -2,6 +2,32 @@
 
 Phụ trách: **TV1**.
 
-FastAPI, SQLAlchemy, Alembic; API, xác thực, dữ liệu và nghiệp vụ. Một worker SQLite WAL cho lab.
+FastAPI, SQLAlchemy và Alembic; nền dữ liệu SQLite WAL cho lab, một worker.
 
-Trạng thái: đã tạo cấu trúc; chưa triển khai chức năng. Xem [bảng phân công](../docs/PHAN_CONG.md).
+## Cài đặt
+
+```powershell
+python -m pip install -r requirements-dev.txt
+```
+
+## Database
+
+- URL mặc định: `sqlite:///./runtime/ogk.db`.
+- Ghi đè bằng environment `OGK_DATABASE_URL`, ví dụ `OGK_DATABASE_URL=sqlite:///./runtime/ogk.db`.
+- Mỗi connection SQLite bật `PRAGMA foreign_keys=ON`, `PRAGMA journal_mode=WAL` và `PRAGMA busy_timeout=5000`.
+- Alembic là nguồn tạo schema. Không chạy `Base.metadata.create_all()` ngoài migration/test.
+
+```powershell
+python -m alembic upgrade head
+python -m uvicorn server.app.main:app --host 127.0.0.1 --port 8000
+```
+
+## Kiểm thử A02
+
+```powershell
+python -m pytest tests/unit/test_db_config.py tests/unit/test_db_foreign_keys.py tests/integration/test_migrations.py tests/integration/test_db_concurrency.py -q
+python -m pytest tests/unit tests/integration -q
+python scripts/check_structure.py
+```
+
+Xem [bảng phân công](../docs/PHAN_CONG.md) và task tiếp theo A03.

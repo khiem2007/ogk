@@ -70,3 +70,12 @@
 - Chưa triển khai các tính năng mới từ PDF chỉ bằng thay đổi tài liệu. Policy integrity, certificate pinning, child-view, SafeSearch, dataset 200 mục, retention/delete-all, WebSocket và M1–M6 vẫn phải được code/test theo task đã gán.
 - Lịch nội bộ 5 tuần được giữ nguyên vì là quyết định trước của người dùng; PDF ghi thời lượng môn học 6 tuần và được ghi rõ như nguồn chính thức.
 - Rủi ro tiến độ: tại ngày 05/11, deadline B03 trong kế hoạch là 04/11 nhưng repo chưa có policy engine; phạm vi bắt buộc cũng tăng. Nhóm cần re-estimate D10 trước khi coi mốc tuần 2 còn khả thi.
+
+## 2026-11-23 — TV1 triển khai A02: database foundation
+
+- Đã thêm FastAPI entry point tối thiểu, cấu hình SQLite, SQLAlchemy engine/session factory và metadata ORM baseline theo ERD.
+- Đã thêm Alembic baseline `20261123_001_initial_schema.py`; migration tạo DB trống với foreign key, unique constraint và index ERD.
+- Kết nối SQLite bật `foreign_keys=ON`, `journal_mode=WAL` và `busy_timeout=5000`; app chạy lab với một worker SQLite.
+- Đã thêm unit/integration tests cho pragmas, foreign key, unique event, migration trống và concurrent reader/writer/lock contention.
+- Kiểm chứng: `python -m alembic upgrade head` PASS; `python -m pytest tests/unit tests/integration -q` PASS 22 tests; `python scripts/check_structure.py` PASS.
+- Chưa triển khai auth, enrollment, API nghiệp vụ hoặc retention/report; các dependency và phạm vi A03 trở đi chưa thuộc A02.

@@ -2,6 +2,9 @@
 
 Phụ trách: **TV1**.
 
-Connection/session; WAL và busy_timeout=5000; transaction và backup nhất quán.
+- `base.py`: DeclarativeBase dùng chung cho ORM và Alembic metadata.
+- `session.py`: engine, session factory, dependency request, per-connection SQLite pragmas và health query.
+- WAL và `busy_timeout=5000`; foreign-key enforcement bật cho app và migration.
+- `create_app_engine()` dùng cho app và test engine; không dùng SQLite memory cho locking test.
 
-Trạng thái: đã tạo cấu trúc; chưa triển khai chức năng. Xem [bảng phân công](../../../docs/PHAN_CONG.md).
+Trạng thái: nền database A02 đã triển khai. Xem [bảng phân công](../../../docs/PHAN_CONG.md).
