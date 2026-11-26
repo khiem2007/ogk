@@ -1,12 +1,17 @@
 from server.app.models.entities import (
     AppCatalog,
+    AuthSession,
     AuditLog,
     Child,
     Command,
     Device,
+    DeviceAuthCredential,
     DeviceEvent,
+    DeviceRefreshToken,
+    EnrollmentAttempt,
     EnrollmentCode,
     Grant,
+    LoginAttempt,
     Policy,
     Request,
     TransparencyRecord,
@@ -15,7 +20,7 @@ from server.app.models.entities import (
 )
 
 __all__ = [
-    "AppCatalog", "AuditLog", "Child", "Command", "Device", "DeviceEvent",
-    "EnrollmentCode", "Grant", "Policy", "Request", "TransparencyRecord",
-    "UsageInterval", "User",
+    "AppCatalog", "AuditLog", "AuthSession", "Child", "Command", "Device", "DeviceAuthCredential",
+    "DeviceEvent", "DeviceRefreshToken", "EnrollmentAttempt", "EnrollmentCode", "Grant",
+    "LoginAttempt", "Policy", "Request", "TransparencyRecord", "UsageInterval", "User",
 ]

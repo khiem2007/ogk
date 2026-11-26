@@ -1,7 +1,7 @@
 # ERD và data dictionary — OpenGuard Kids
 
 **Mã công việc:** TV1-A01  
-**Trạng thái:** logical model đề xuất cho contract review; chưa có ORM model/migration.
+**Trạng thái:** logical model ban đầu; server ORM/migration đang được triển khai theo A02–A04.
 
 ## Quan hệ
 
@@ -10,6 +10,9 @@ erDiagram
     USERS ||--o{ CHILDREN : owns
     CHILDREN ||--o{ DEVICES : has
     USERS ||--o{ ENROLLMENT_CODES : creates
+    CHILDREN ||--o{ ENROLLMENT_CODES : targets
+    DEVICES ||--o| DEVICE_AUTH_CREDENTIALS : authenticates
+    DEVICE_AUTH_CREDENTIALS ||--o{ DEVICE_REFRESH_TOKENS : rotates
     DEVICES ||--o{ POLICIES : receives
     USERS ||--o{ POLICIES : authors
     USERS ||--o{ APP_CATALOG : configures
@@ -32,8 +35,11 @@ Parent resource query bắt buộc scope `child.owner_id = authenticated_user.id
 |---|---|---|
 | `users` | `id`, `email`, `password_hash`, `created_at` | Email normalized unique; password chỉ lưu hash. |
 | `children` | `id`, `owner_id`, `display_name`, `age_band`, `timezone` | FK `owner_id`; timezone IANA hợp lệ. |
-| `devices` | `id`, `child_id`, `windows_sid`, `name`, `token_hash`, `last_seen_at`, `applied_policy_version`, `revoked_at` | FK child; hash bearer token, hỗ trợ revoke; index child. |
-| `enrollment_codes` | `id`, `owner_id`, `code_hash`, `expires_at`, `consumed_at`, `attempt_count` | Hash at rest, one-time, expiry/rate limit; consume cùng transaction tạo device. |
+| `devices` | `id`, `child_id`, `windows_sid`, `name`, `token_hash`, `last_seen_at`, `applied_policy_version`, `revoked_at` | FK child; access bearer hash (15 phút), revoke device-scoped; index child. |
+| `device_auth_credentials` | `id`, `device_id`, `access_expires_at`, `refresh_expires_at`, `revoked_at`, `created_at` | Một credential/device; expiry và revoke access/refresh cùng family. |
+| `device_refresh_tokens` | `id`, `credential_id`, `token_hash`, `expires_at`, `consumed_at`, `created_at` | Hash unique; mỗi refresh consume token cũ và tạo token mới; replay revoke credential. |
+| `enrollment_codes` | `id`, `owner_id`, `child_id`, `code_prefix`, `code_hash`, `expires_at`, `consumed_at`, `attempt_count` | HMAC verifier; 8 ký tự, one-time/10 phút; gắn child; consume cùng transaction tạo device. |
+| `enrollment_attempts` | `ip_address`, `failed_count`, `window_started_at`, `locked_until` | 5 lần sai trong 15 phút khóa IP thêm 15 phút; không lưu code/token plaintext. |
 | `policies` | `id`, `device_id`, `version`, `document_json`, `created_by`, `created_at` | Snapshot bất biến; unique `(device_id, version)`. |
 | `app_catalog` | `id`, `owner_id`, `display_name`, `normalized_exe_name/path`, `category` | App do parent cấu hình; không suy ra usage từ app nền. |
 | `usage_intervals` | `id`, `event_id`, `device_id`, `start_utc`, `end_utc`, `active_seconds`, `app_id`, `sequence`, `boot_id` | Unique `(device_id,event_id)`; `end > start`; app seconds là tập con machine seconds. |
