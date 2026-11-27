@@ -63,4 +63,4 @@ Khi helper mất, Service báo degraded và khoảng telemetry thiếu; không t
 
 Theo PHAN_CONG: TV1 backend/contracts/resolver; TV2 core/Windows/DNS adapter; TV3 dashboard/Tray. Contracts là ranh giới; agent không import server code.
 
-Spike Windows nằm ở [scripts/spikes](../scripts/spikes/README.md); checklist ở [WINDOWS_CHECKLIST.md](../tests/manual/WINDOWS_CHECKLIST.md). B01 đã smoke-test read-only trên Windows host nhưng chưa nghiệm thu VM hai tài khoản/Session 0; xem [PROGRESS.md](PROGRESS.md).
+Spike Windows nằm ở [agent/spikes](../agent/spikes/README.md); checklist ở [CHECKLIST.md](../agent/windows/CHECKLIST.md). B01 đã smoke-test read-only trên Windows host nhưng chưa nghiệm thu VM hai tài khoản/Session 0; xem [PROGRESS.md](PROGRESS.md).

@@ -25,15 +25,15 @@ python -m pip install -r requirements-dev.txt
 - Alembic là nguồn tạo schema. Không chạy `Base.metadata.create_all()` ngoài migration/test.
 
 ```powershell
-python -m alembic upgrade head
+python -m alembic -c server/alembic.ini upgrade head
 python -m uvicorn server.app.main:app --host 127.0.0.1 --port 8000
 ```
 
 ## Kiểm thử A02
 
 ```powershell
-python -m pytest tests/unit/test_db_config.py tests/unit/test_db_foreign_keys.py tests/integration/test_migrations.py tests/integration/test_db_concurrency.py -q
-python -m pytest tests/unit tests/integration -q
+python -m pytest server/tests/test_db_config.py server/tests/test_db_foreign_keys.py server/tests/test_migrations.py server/tests/test_db_concurrency.py -q
+python -m pytest -q
 python scripts/check_structure.py
 ```
 

@@ -1,8 +1,8 @@
 """
-tests/unit/test_tray_state.py
+agent/tests/test_tray_state.py
 ==============================
 Unit tests cho C05 — Tray module (không cần GUI thật).
-Chạy với: QT_QPA_PLATFORM=offscreen python -m pytest tests/unit/test_tray_state.py -v
+Chạy với: QT_QPA_PLATFORM=offscreen python -m pytest agent/tests/test_tray_state.py -v
 
 Tại sao không cần GUI thật:
 - TrayState và IPCClient là pure Python, không import PySide6.

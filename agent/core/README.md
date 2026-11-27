@@ -11,7 +11,7 @@ Chạy kiểm thử từ thư mục gốc repo:
 
 ```powershell
 python -m pip install -r requirements-dev.txt
-python -m pytest tests/unit -q
+python -m pytest agent/tests -q
 ```
 
 Các module Windows phải nằm ngoài `agent/core`; việc phân giải tên timezone và engine đánh giá policy thuộc các task sau B02.

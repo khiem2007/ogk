@@ -15,7 +15,7 @@ Không coi tài liệu, spike hay CI cấu trúc là đã hoàn thành các tín
 - [Mục lục 9 ảnh tham chiếu](docs/reference/README.md).
 - [SRS](docs/SRS.md), [ERD](docs/ERD.md), [API v1](docs/API.md), [kiến trúc](docs/ARCHITECTURE.md), [các điểm cần chốt](docs/DECISIONS.md), [hợp đồng tích hợp](contracts/README.md).
 - [Quyền riêng tư](docs/PRIVACY.md), [threat model](docs/THREATMODEL.md), [khai báo AI](docs/AI_USAGE.md), [khung báo cáo kỹ thuật mạng](docs/BaoCaoKyThuatMang.md).
-- [Quy trình làm việc nhóm](CONTRIBUTING.md), [tiến độ thực tế](docs/PROGRESS.md), [checklist Windows](tests/manual/WINDOWS_CHECKLIST.md).
+- [Quy trình làm việc nhóm](CONTRIBUTING.md), [tiến độ thực tế](docs/PROGRESS.md), [checklist Windows](agent/windows/CHECKLIST.md).
 
 ## Cấu trúc
 

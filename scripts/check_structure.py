@@ -5,8 +5,8 @@ import re
 root = Path(__file__).resolve().parents[1]
 required = [
     "server", "dashboard", "agent/core", "agent/windows", "agent/tray",
-    "contracts/schemas", "contracts/fixtures", "tests/unit",
-    "tests/integration", "tests/e2e", "tests/manual", "scripts/spikes",
+    "agent/spikes", "agent/tests", "server/tests", "contracts/schemas",
+    "contracts/fixtures", "tests/e2e",
     "deploy", "docs/adr", "docs/reference", "docs/evidence",
 ]
 errors = [f"Missing directory: {name}" for name in required if not (root / name).is_dir()]
