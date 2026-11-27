@@ -96,3 +96,11 @@
 - Refresh rotate access/refresh; replay token cũ revoke credential. Device bearer auth kiểm tra expiry/revoke; parent chỉ revoke/list device thuộc ownership scope của mình.
 - Đã cập nhật API, ERD, threat model, hướng dẫn cấu hình pepper và `.env.example`. Agent DPAPI/pinning/heartbeat vẫn ngoài A04 (B06/A11).
 - Kiểm chứng: `python -m pytest tests/unit tests/integration -q` PASS 33 tests; `python -m compileall -q server tests` PASS; `python scripts/check_structure.py` PASS. Có một warning deprecation trong pytest/AnyIO dependency, không phát sinh test failure.
+
+## 2026-11-27 — TV1 triển khai A05: signed policy snapshots
+
+- Đã thêm parent policy GET/PUT và agent policy GET với device/owner scoping, ETag/If-Match, immutable version history và conflict `409 VERSION_CONFLICT`.
+- Snapshot được validate bằng JSON Schema Draft 2020-12, canonicalize bằng JSON UTF-8 đã sort keys/compact separators và ký Ed25519; private key server-side, public key map hỗ trợ nhiều key ID.
+- Agent verifier từ chối schema sai, key không tin cậy hoặc chữ ký sai trước khi trả snapshot cho caller để apply. Policy update và audit cùng transaction; stale version không thay đổi bản hiện hành.
+- Cấu hình qua `OGK_POLICY_SIGNING_KEY_ID`, `OGK_POLICY_SIGNING_PRIVATE_KEY` và `OGK_POLICY_VERIFY_PUBLIC_KEYS`; không có signing-key fallback.
+- Kiểm chứng: `python -m pytest -q` PASS 46 tests; `python -m compileall -q contracts agent server tests` PASS; `python scripts/check_structure.py` PASS; `git -c core.whitespace=cr-at-eol diff --check` PASS. Pytest có một warning deprecation từ AnyIO dependency.

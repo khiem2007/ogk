@@ -8,7 +8,7 @@ Tài sản cần bảo vệ: danh tính gia đình/trẻ, device secret, policy,
 |---|---|---|---|---|---|
 | TM01 | Spoofing | Client giả agent gửi event/poll command cho device khác | Người ngoài | Opaque access token 15 phút + refresh 30 ngày gắn device, rotation/replay revoke, pin certificate, ownership | API integration hai device; refresh replay và device revoke test |
 | TM02 | Spoofing/EoP | Trẻ giả Tray/helper hoặc khai SID trong payload | Trẻ là attacker | Named Pipe DACL, xác minh token/SID/session phía server, bounds | VM client SID sai bị deny |
-| TM03 | Tampering | Policy cache bị sửa để nới luật | Trẻ/local process | Version + HMAC/chữ ký, ACL ProgramData, atomic apply, giữ bản hợp lệ trước | Test policy sửa byte bị reject |
+| TM03 | Tampering | Policy cache bị sửa để nới luật | Trẻ/local process | Version + Ed25519 signature, ACL ProgramData, atomic apply, giữ bản hợp lệ trước | Test policy sửa byte bị reject |
 | TM04 | Tampering/Replay | Replay command/grant/event làm cộng giờ hoặc đếm đôi | Trẻ/mạng lỗi | UUID/idempotency, expiry, intent/result bền vững, ACK sau commit | Retry/crash/lost ACK test |
 | TM05 | Repudiation | Parent/admin phủ nhận đã đổi luật | User hợp lệ | Audit actor/time/IP/before/after, redaction, append semantics | Query audit + child-view |
 | TM06 | Information disclosure | IDOR xem dữ liệu trẻ của gia đình khác | Parent khác | Ownership ở query, role parent/child-view/admin, pagination | Hai gia đình test chéo |

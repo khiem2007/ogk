@@ -1,10 +1,10 @@
 # Shared fixtures — Contract v1
 
-Fixture dùng ID ngẫu nhiên cố định cho test, domain `.example.test`, không có thông tin trẻ/gia đình thật. Các file `*.valid.json` minh họa shape hợp lệ; chưa được chạy qua JSON Schema validator tự động và không phải dữ liệu seed production.
+Fixture dùng ID ngẫu nhiên cố định cho test, domain `.example.test`, không có thông tin trẻ/gia đình thật. Các file `*.valid.json` minh họa shape hợp lệ và được dùng bởi test contract; không phải dữ liệu seed production.
 
 | Fixture | Schema | Ý nghĩa |
 |---|---|---|
-| `policy.valid.json` | `policy.schema.json` | Snapshot v3, timezone HCMC, lịch/quota, app và domain rules. |
+| `policy.valid.json` | `policy.schema.json` | Snapshot v3 có chữ ký Ed25519 từ test-only key `test-fixture`; tuyệt đối không dùng private test key trong production. |
 | `event.usage.valid.json` | `event.schema.json` | Foreground usage measured 30 giây; ID ổn định để minh họa dedup. |
 | `command.lock.valid.json` | `command.schema.json` | LOCK_SESSION có expiry; fixture không thực thi lệnh. |
 | `command_ack.valid.json` | `command_ack.schema.json` | Result ACK cho cùng command ID; executed không được suy ra từ delivery. |

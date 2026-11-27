@@ -54,5 +54,10 @@
                 }
             ]
         }
+    },
+    "signature": {
+        "algorithm": "Ed25519",
+        "key_id": "test-fixture",
+        "value": "ms32yWYXnHE6zuK5DknJgFc/VRY5W5vIY7FnuRbRh+er7x4DMljGph0xJhOvDrC1IgVFdpkZkDID+bZwLvL2CA=="
     }
 }
