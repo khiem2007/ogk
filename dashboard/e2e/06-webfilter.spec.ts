@@ -1,5 +1,5 @@
 /**
- * tests/e2e/06-webfilter.spec.ts
+ * dashboard/e2e/06-webfilter.spec.ts
  * ================================
  * T11: Web Filter & SafeSearch.
  *

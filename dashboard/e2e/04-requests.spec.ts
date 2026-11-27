@@ -1,5 +1,5 @@
 /**
- * tests/e2e/04-requests.spec.ts
+ * dashboard/e2e/04-requests.spec.ts
  * ==============================
  * T09: Request approve/reject — atomic transition enforcement.
  *

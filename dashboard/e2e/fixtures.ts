@@ -1,5 +1,5 @@
 /**
- * tests/e2e/fixtures.ts
+ * dashboard/e2e/fixtures.ts
  * =====================
  * Shared Playwright test fixtures cho OGK E2E suite.
  *

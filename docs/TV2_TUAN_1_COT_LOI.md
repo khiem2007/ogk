@@ -179,7 +179,7 @@ Ví dụ cần hiểu:
 
 ## 10. Hồ sơ cần có để bàn giao tuần 1
 
-- [ ] Script và hướng dẫn chạy spike trong `scripts/spikes/`.
+- [ ] Script và hướng dẫn chạy spike trong `agent/spikes/`.
 - [ ] Log SID/session của phụ huynh, trẻ và service; chứng minh đọc đúng phiên.
 - [ ] Kết quả foreground/idle, khóa/mở khóa và tình huống mất helper.
 - [ ] Kết quả IPC hợp lệ, sai danh tính và payload không hợp lệ.

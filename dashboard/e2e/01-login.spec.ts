@@ -1,5 +1,5 @@
 /**
- * tests/e2e/01-login.spec.ts
+ * dashboard/e2e/01-login.spec.ts
  * ==========================
  * T01: Password validation & login flow.
  *

@@ -1,5 +1,5 @@
 /**
- * tests/e2e/05-commands.spec.ts
+ * dashboard/e2e/05-commands.spec.ts
  * ==============================
  * T10: Commands — LOCK_SESSION lifecycle.
  *

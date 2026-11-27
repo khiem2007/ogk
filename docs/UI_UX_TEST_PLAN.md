@@ -75,13 +75,13 @@ OpenGuard Kids (OGK — *Người Bạn Đồng Hành*) được thiết kế th
 ## 5. Kế hoạch kiểm thử chi tiết của TV3
 
 1. **Unit test Frontend (`dashboard/`):** Kiểm tra validator lịch `7×48` (empty, overlap, qua nửa đêm), tính toàn vẹn bảng phân loại ≥ 200 domain và đủ 6 nhóm, `protected allowlist` bất biến, xử lý error envelope chuẩn API v1.
-2. **Unit test Tray & IPC (`tests/unit/test_tray_*.py`):**
+2. **Unit test Tray & IPC (`agent/tests/test_tray_*.py`):**
    - Kiểm tra `ipc_message.schema.json` validation (đúng schema cho `telemetry.sample`, `request.submit`, `status.get`, `command.lock`, `command.result`).
    - Kiểm tra bất biến `tray_icon_available=False` → phát yêu cầu dừng an toàn (không chạy ẩn).
    - Kiểm tra queue yêu cầu khi offline gắn nhãn *"Chưa gửi"* và flush khi online.
    - Kiểm tra cảnh báo 10/5/1 phút và grace 60 giây.
    - Kiểm tra giao diện PySide6 thật dưới `QT_QPA_PLATFORM=offscreen`.
-3. **E2E Web (`tests/e2e/` — Playwright):**
+3. **E2E Web (`dashboard/e2e/` — Playwright):**
    - Luồng 1: Đăng nhập & kiểm tra validation mật khẩu < 10 ký tự.
    - Luồng 2: Chuyển đổi Trẻ / Thiết bị & tạo mã ghép nối + kiểm tra trạng thái mã hết hạn.
    - Luồng 3: Tạo lịch `7×48`, kiểm tra báo lỗi overlap & qua nửa đêm, lưu policy (`server_version` tăng), xử lý xung đột `409 VERSION_CONFLICT`.

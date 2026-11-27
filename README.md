@@ -21,18 +21,21 @@ Không coi tài liệu, spike hay CI cấu trúc là đã hoàn thành các tín
 
 ```text
 ogk/
-  server/                 # app/{api,auth,models,schemas,services,db}, migrations
-  dashboard/              # src/{api,components,pages,styles}, public
+  server/                 # app, migrations, tests, alembic.ini, requirements.txt
+  dashboard/              # src, e2e
   agent/
     core/                 # policy, counter, clock, sync, outbox
-    windows/              # service, helper, IPC, process, adapter DNS
     tray/                 # PySide6
-    dns/                  # resolver và rules
+    windows/              # service, helper, IPC, process, adapter DNS
+    spikes/               # spike Windows chạy thủ công
+    tests/                # unit tests của agent
+    requirements.txt
   contracts/              # schemas và fixtures dùng chung
-  tests/                  # unit, integration, e2e, manual
-  scripts/                # bootstrap/seed/install/uninstall/backup; spikes
+  scripts/                # check_structure.py, export_calendar.py
   deploy/                 # kế hoạch compose/reverse proxy; env example
   docs/                   # brief, phân công, kiến trúc, ADR, ảnh, evidence
+  requirements-dev.txt
+  pytest.ini
   .github/                # mẫu issue/PR và kiểm tra cấu trúc
 ```
 

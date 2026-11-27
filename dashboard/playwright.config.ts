@@ -11,12 +11,12 @@ import { defineConfig, devices } from '@playwright/test';
  * Chạy: cd dashboard && npx playwright test
  */
 export default defineConfig({
-  testDir: '../tests/e2e',
+  testDir: './e2e',
   fullyParallel: false,  // Chạy tuần tự để tránh xung đột demo state
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   workers: 1,
-  reporter: [['html', { outputFolder: '../tests/e2e/results' }], ['list']],
+  reporter: [['html', { outputFolder: 'playwright-report' }], ['list']],
 
   use: {
     baseURL: 'http://localhost:5173',
