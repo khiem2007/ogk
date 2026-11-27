@@ -47,8 +47,8 @@
 | `POST /agent/refresh` | Refresh token + TLS | Body `{refresh_token}`; rotate refresh token và access token. Replay refresh token cũ revoke credential. |
 | `GET /agent/me` | Device bearer | Kiểm tra bearer token chưa hết hạn/revoke; trả device identity suy ra từ token. |
 | `GET /agent/policy?version={n}` | Device bearer | Trả current immutable signed policy nếu version khác, hoặc `304`; device được suy ra từ token. Agent phải validate schema/chữ ký trước khi atomic apply; lỗi giữ policy tốt trước. |
-| `POST /agent/heartbeat` | Device bearer | `last_seen`, applied policy version, agent version, bounded health state; server trả desired policy version/command hint. |
-| `POST /agent/events/batch` | Device bearer | Bounded batch event; dedup/commit; trả ACK ID list sau commit. |
+| `POST /agent/heartbeat` | Device bearer | Body `{applied_policy_version,agent_version,health}` (health tối đa 8 trường); server suy ra identity từ bearer, cập nhật `last_seen_at/applied_policy_version` và trả `server_time,desired_policy_version,connection_state`. Ngoài 180 giây không nhận heartbeat, trạng thái là mất liên lạc nhưng không suy ra thiết bị đã tắt. |
+| `POST /agent/events/batch` | Device bearer | Nhận `{events}` tối đa 100 envelope; validate allowlist payload, dedup atomically theo `(device_id,event_id)`, commit rồi mới trả `acknowledged_event_ids,accepted_count,replayed_count,server_time`. Replay/lost ACK không nhân usage hoặc event. |
 | `POST /agent/requests` | Device bearer | Tạo/nhận lại request theo stable request ID; server gắn device. |
 | `GET /agent/commands` | Device bearer | Poll queued commands cho đúng device; lệnh hết hạn trả/đánh dấu expired, không deliver để chạy muộn. |
 | `POST /agent/commands/{command_id}/ack` | Device bearer | Result `{status: executed|failed, observed_at, result_code}`; idempotent, command phải thuộc token device. |
