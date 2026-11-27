@@ -16,6 +16,7 @@ python -m pip install -r requirements-dev.txt
 - Ghi đè bằng environment `OGK_DATABASE_URL`, ví dụ `OGK_DATABASE_URL=sqlite:///./runtime/ogk.db`.
 - Mỗi connection SQLite bật `PRAGMA foreign_keys=ON`, `PRAGMA journal_mode=WAL` và `PRAGMA busy_timeout=5000`.
 - Alembic là nguồn tạo schema. Không chạy `Base.metadata.create_all()` ngoài migration/test.
+- Enrollment API yêu cầu `OGK_ENROLLMENT_PEPPER` ổn định, bí mật, tối thiểu 32 bytes. Tạo một giá trị riêng cho môi trường bằng `python -c "import secrets; print(secrets.token_urlsafe(32))"` và lưu trong secret manager/environment, không commit vào file.
 
 ```powershell
 python -m alembic upgrade head
@@ -30,4 +31,4 @@ python -m pytest tests/unit tests/integration -q
 python scripts/check_structure.py
 ```
 
-Xem [bảng phân công](../docs/PHAN_CONG.md) và task tiếp theo A03.
+Xem [bảng phân công](../docs/PHAN_CONG.md) và [API v1](../docs/API.md). Auth parent, enrollment và device-token lifecycle đã được triển khai; Windows agent secure storage/pinning thuộc B06/A11.

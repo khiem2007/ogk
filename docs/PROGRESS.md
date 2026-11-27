@@ -134,3 +134,29 @@
 - **TypeScript**: `tsc --noEmit` → **clean**
 - **Build**: `vite build` → **PASS 282 kB**
 - **check_structure.py**: PASS (chỉ thêm file, không xóa)
+
+
+## 2026-11-26 — TV1 triển khai A03: authentication và authorization cơ bản
+
+- Đã thêm migration/model auth: role `parent|child-view|admin`, session server-side 12 giờ, login lockout và CSRF hash gắn session.
+- Đã triển khai `POST /api/v1/auth/login`, `POST /api/v1/auth/logout`, `GET /api/v1/auth/me` và `GET /api/v1/auth/children` cùng alias `/auth/*`.
+- Mật khẩu dùng Argon2id; cookie `HttpOnly`, `SameSite=Lax`, `Secure` trong production; mutation logout yêu cầu `X-CSRF-Token` khớp session.
+- 5 lần đăng nhập sai theo `(email, IP)` khóa 15 phút; session hết hạn/revoke từ chối; parent/child-view/admin và ownership query đã được kiểm tra ở backend.
+- Kiểm chứng: `python -m pytest tests/unit/test_db_config.py tests/unit/test_db_foreign_keys.py tests/integration/test_migrations.py tests/integration/test_auth.py -q` PASS 9 tests; `python -m alembic upgrade head` PASS.
+
+## 2026-11-26 — TV1 triển khai A04: enrollment và device token lifecycle
+
+- Đã thêm migration/model enrollment gắn child, credential access, lịch sử refresh-token rotation và throttle thử sai theo IP.
+- Parent tạo enrollment code 8 ký tự, hạn 10 phút, một lần dùng; HMAC-SHA256 verifier yêu cầu `OGK_ENROLLMENT_PEPPER` ổn định, tối thiểu 32 bytes. Sai 5 lần trong 15 phút sẽ khóa IP 15 phút.
+- Agent enroll atomically consume code và tạo device; cấp opaque access token 15 phút cùng refresh token 30 ngày. Token plaintext chỉ trả một lần, DB lưu hash/verifier.
+- Refresh rotate access/refresh; replay token cũ revoke credential. Device bearer auth kiểm tra expiry/revoke; parent chỉ revoke/list device thuộc ownership scope của mình.
+- Đã cập nhật API, ERD, threat model, hướng dẫn cấu hình pepper và `.env.example`. Agent DPAPI/pinning/heartbeat vẫn ngoài A04 (B06/A11).
+- Kiểm chứng: `python -m pytest tests/unit tests/integration -q` PASS 33 tests; `python -m compileall -q server tests` PASS; `python scripts/check_structure.py` PASS. Có một warning deprecation trong pytest/AnyIO dependency, không phát sinh test failure.
+
+## 2026-11-27 — TV1 triển khai A05: signed policy snapshots
+
+- Đã thêm parent policy GET/PUT và agent policy GET với device/owner scoping, ETag/If-Match, immutable version history và conflict `409 VERSION_CONFLICT`.
+- Snapshot được validate bằng JSON Schema Draft 2020-12, canonicalize bằng JSON UTF-8 đã sort keys/compact separators và ký Ed25519; private key server-side, public key map hỗ trợ nhiều key ID.
+- Agent verifier từ chối schema sai, key không tin cậy hoặc chữ ký sai trước khi trả snapshot cho caller để apply. Policy update và audit cùng transaction; stale version không thay đổi bản hiện hành.
+- Cấu hình qua `OGK_POLICY_SIGNING_KEY_ID`, `OGK_POLICY_SIGNING_PRIVATE_KEY` và `OGK_POLICY_VERIFY_PUBLIC_KEYS`; không có signing-key fallback.
+- Kiểm chứng: `python -m pytest -q` PASS 46 tests; `python -m compileall -q contracts agent server tests` PASS; `python scripts/check_structure.py` PASS; `git -c core.whitespace=cr-at-eol diff --check` PASS. Pytest có một warning deprecation từ AnyIO dependency.

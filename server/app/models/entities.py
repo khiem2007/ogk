@@ -11,7 +11,39 @@ class User(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    role: Mapped[str] = mapped_column(String(32), nullable=False, default="parent")
+    child_id: Mapped[str | None] = mapped_column(ForeignKey("children.id", ondelete="SET NULL"))
     created_at: Mapped[datetime] = mapped_column(nullable=False)
+    __table_args__ = (
+        CheckConstraint("role IN ('parent','child-view','admin')", name="ck_users_role"),
+    )
+
+
+class AuthSession(Base):
+    __tablename__ = "auth_sessions"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    csrf_token_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(nullable=False)
+    revoked_at: Mapped[datetime | None]
+    created_at: Mapped[datetime] = mapped_column(nullable=False)
+    __table_args__ = (
+        Index("ix_auth_sessions_user", "user_id"),
+        Index("ix_auth_sessions_expiry", "expires_at"),
+    )
+
+
+class LoginAttempt(Base):
+    __tablename__ = "login_attempts"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    email: Mapped[str] = mapped_column(String(255), primary_key=False, nullable=False)
+    ip_address: Mapped[str] = mapped_column(String(45), nullable=False)
+    failed_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    locked_until: Mapped[datetime | None]
+    updated_at: Mapped[datetime] = mapped_column(nullable=False)
+    __table_args__ = (
+        UniqueConstraint("email", "ip_address", name="uq_login_attempt_email_ip"),
+    )
 
 
 class Child(Base):
@@ -36,14 +68,52 @@ class Device(Base):
     __table_args__ = (Index("ix_devices_child_id", "child_id"),)
 
 
+class DeviceAuthCredential(Base):
+    __tablename__ = "device_auth_credentials"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    device_id: Mapped[str] = mapped_column(ForeignKey("devices.id", ondelete="CASCADE"), unique=True, nullable=False)
+    access_expires_at: Mapped[datetime] = mapped_column(nullable=False)
+    refresh_expires_at: Mapped[datetime] = mapped_column(nullable=False)
+    revoked_at: Mapped[datetime | None]
+    created_at: Mapped[datetime] = mapped_column(nullable=False)
+    __table_args__ = (Index("ix_device_auth_credentials_access_expiry", "access_expires_at"),)
+
+
+class DeviceRefreshToken(Base):
+    __tablename__ = "device_refresh_tokens"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    credential_id: Mapped[str] = mapped_column(
+        ForeignKey("device_auth_credentials.id", ondelete="CASCADE"), nullable=False
+    )
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(nullable=False)
+    consumed_at: Mapped[datetime | None]
+    created_at: Mapped[datetime] = mapped_column(nullable=False)
+    __table_args__ = (
+        Index("ix_device_refresh_tokens_credential", "credential_id"),
+        Index("ix_device_refresh_tokens_expiry", "expires_at"),
+    )
+
+
 class EnrollmentCode(Base):
     __tablename__ = "enrollment_codes"
     id: Mapped[str] = mapped_column(String(36), primary_key=True)
     owner_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     code_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    code_prefix: Mapped[str | None] = mapped_column(String(4))
     expires_at: Mapped[datetime] = mapped_column(nullable=False)
     consumed_at: Mapped[datetime | None]
     attempt_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    child_id: Mapped[str | None] = mapped_column(ForeignKey("children.id", ondelete="CASCADE"))
+    __table_args__ = (Index("ix_enrollment_codes_prefix", "code_prefix"),)
+
+
+class EnrollmentAttempt(Base):
+    __tablename__ = "enrollment_attempts"
+    ip_address: Mapped[str] = mapped_column(String(45), primary_key=True)
+    failed_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    window_started_at: Mapped[datetime] = mapped_column(nullable=False)
+    locked_until: Mapped[datetime | None]
 
 
 class Policy(Base):
