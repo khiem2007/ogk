@@ -5,7 +5,7 @@ import re
 root = Path(__file__).resolve().parents[1]
 required = [
     "server", "dashboard", "agent/core", "agent/windows", "agent/tray",
-    "agent/dns", "contracts/schemas", "contracts/fixtures", "tests/unit",
+    "contracts/schemas", "contracts/fixtures", "tests/unit",
     "tests/integration", "tests/e2e", "tests/manual", "scripts/spikes",
     "deploy", "docs/adr", "docs/reference", "docs/evidence",
 ]

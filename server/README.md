@@ -4,6 +4,13 @@ Phụ trách: **TV1**.
 
 FastAPI, SQLAlchemy và Alembic; nền dữ liệu SQLite WAL cho lab, một worker.
 
+## Cấu trúc dự kiến
+
+- `server/app/api/`: router `/api/v1` và kiểm tra ownership.
+- `server/app/auth/`: session, CSRF, token thiết bị và enrollment.
+- `server/app/schemas/`: validation request/response theo contracts.
+- `server/app/services/`: policy, approvals, ingest, commands, report và audit.
+
 ## Cài đặt
 
 ```powershell
