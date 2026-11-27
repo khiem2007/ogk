@@ -80,6 +80,62 @@
 - Kiểm chứng: `python -m alembic upgrade head` PASS; `python -m pytest tests/unit tests/integration -q` PASS 22 tests; `python scripts/check_structure.py` PASS.
 - Chưa triển khai auth, enrollment, API nghiệp vụ hoặc retention/report; các dependency và phạm vi A03 trở đi chưa thuộc A02.
 
+## 2026-11-26 — TV3 C01–C10: Dashboard, Tray, E2E, Docs
+
+### C01 ✅ — UI/UX Analysis & Test Plan
+- Tạo `docs/UI_UX_TEST_PLAN.md`: phân tích 9 ảnh tham chiếu, NT1–NT6, traceability matrix T01–T23.
+
+### C02 ✅ — React TypeScript Vite Dashboard Setup
+- `dashboard/package.json`, `tsconfig.json`, `vite.config.ts`, `index.html` — React 19, Vite 6, Vitest.
+- `npm install` thành công 96 packages.
+- Build PASS: `dist/assets/index-CabBsPMk.js 281.77 kB │ gzip: 86.57 kB`
+
+### C03 ✅ — Auth & Child/Device Pairing
+- `dashboard/src/types/ogk.ts` — toàn bộ TypeScript types từ contracts.
+- `dashboard/src/pages/LoginPage.tsx` — ≥10 ký tự, lockout, Demo/API toggle.
+- `dashboard/src/pages/ChildrenDevicesPage.tsx` — enrollment code 8-char/10-min.
+
+### C04 ✅ — Schedule 7×48 / Quota / App Rules / Policy Version
+- `dashboard/src/utils/validation.ts` — `validateScheduleSlots()`, `normalizeDomainInput()`.
+- `dashboard/src/pages/AppsSchedulePage.tsx` — ma trận 7×48, quota, app rules SHA-256, VERSION_CONFLICT.
+
+### C05 ✅ — Tray UI (PySide6)
+- `agent/tray/__init__.py`, `models.py`, `ipc_client.py`, `app.py` — TrayState, IPCClient, OgkTrayApp.
+- `tests/unit/test_tray_state.py` — 14 tests PASS (NT2, offline queue, warning thresholds, IPC).
+- Lệnh: `QT_QPA_PLATFORM=offscreen python -m pytest tests/unit/test_tray_state.py -v`
+
+### C06 ✅ — Requests & Commands Dashboard
+- `dashboard/src/pages/RequestsPage.tsx` — approve/reject atomic transition.
+- `dashboard/src/pages/CommandsPage.tsx` — 5-state commands, KHÔNG "success" trước `executed` ACK.
+
+### C07 ✅ — Reports, Audit & Child-view
+- `dashboard/src/pages/ReportsPage.tsx` — daily/weekly chart, audit log, delete-all 2-step, child-view.
+
+### C08 ✅ — Web Filter & SafeSearch
+- `dashboard/src/data/domainCatalog.ts` — 200+ domain entries, NT6 protected allowlist.
+- `dashboard/src/pages/WebFilterPage.tsx` — 6 categories, SafeSearch, locked allowlist.
+
+### C09 ✅ — E2E Playwright Tests
+- `dashboard/playwright.config.ts` — Firefox only, Vite auto-start, demo mode.
+- `tests/e2e/fixtures.ts` — shared authed page fixture.
+- `tests/e2e/01-login.spec.ts` → `07-reports-childview.spec.ts` — 17 test cases (T01–T15).
+- Lệnh: `cd dashboard && npx playwright test`
+
+### C10 ✅ — Documentation
+- `dashboard/README.md` — cập nhật với install/run/test/build commands.
+- `agent/tray/README.md` — cập nhật với kiến trúc, cài đặt, quy tắc.
+- `tests/e2e/README.md` — cập nhật với 17 test cases.
+- `docs/AI_USAGE.md` — thêm dòng TV3 với bằng chứng kiểm thử.
+- `docs/evidence/` — C01, C02, C09 evidence files.
+
+### Tổng kết kiểm tra 2026-11-26
+- **Python**: `pytest tests/ -q` → 22 (cũ) + 14 (tray) = **36 passed**
+- **JS unit**: `cd dashboard && npm test` → **9 passed**
+- **TypeScript**: `tsc --noEmit` → **clean**
+- **Build**: `vite build` → **PASS 282 kB**
+- **check_structure.py**: PASS (chỉ thêm file, không xóa)
+
+
 ## 2026-11-26 — TV1 triển khai A03: authentication và authorization cơ bản
 
 - Đã thêm migration/model auth: role `parent|child-view|admin`, session server-side 12 giờ, login lockout và CSRF hash gắn session.
