@@ -160,3 +160,10 @@
 - Agent verifier từ chối schema sai, key không tin cậy hoặc chữ ký sai trước khi trả snapshot cho caller để apply. Policy update và audit cùng transaction; stale version không thay đổi bản hiện hành.
 - Cấu hình qua `OGK_POLICY_SIGNING_KEY_ID`, `OGK_POLICY_SIGNING_PRIVATE_KEY` và `OGK_POLICY_VERIFY_PUBLIC_KEYS`; không có signing-key fallback.
 - Kiểm chứng: `python -m pytest -q` PASS 46 tests; `python -m compileall -q contracts agent server tests` PASS; `python scripts/check_structure.py` PASS; `git -c core.whitespace=cr-at-eol diff --check` PASS. Pytest có một warning deprecation từ AnyIO dependency.
+
+## 2026-11-27 — TV1 triển khai A06: heartbeat và event ingestion/ACK
+
+- Thêm `POST /api/v1/agent/heartbeat` dùng bearer identity, cập nhật `last_seen_at/applied_policy_version`, trả thời gian server và desired policy version. Mất liên lạc được suy ra theo ngưỡng 180 giây, không suy ra thiết bị đã tắt.
+- Thêm `POST /api/v1/agent/events/batch` tối đa 100 event, validation envelope/payload theo allowlist, transaction SQLite, dedup `(device_id,event_id)` và ACK chỉ sau commit.
+- Replay/lost ACK, event trùng trong cùng batch và replay sau khi đã commit không nhân `UsageInterval` hoặc `DeviceEvent`; payload sai hoặc batch vượt bound không commit dữ liệu.
+- Kiểm chứng: test integration A06 pass cho heartbeat, auth bearer, batch usage, replay, duplicate trong batch, invalid payload và batch bound; ngưỡng 180 giây có unit assertion.
