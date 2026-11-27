@@ -6,7 +6,7 @@ Tài sản cần bảo vệ: danh tính gia đình/trẻ, device secret, policy,
 
 | ID | STRIDE | Mối đe dọa | Tác nhân | Kiểm soát dự kiến | Bằng chứng cần có |
 |---|---|---|---|---|---|
-| TM01 | Spoofing | Client giả agent gửi event/poll command cho device khác | Người ngoài | Token 15 phút + refresh gắn device, pin certificate, revoke, ownership | API integration hai device |
+| TM01 | Spoofing | Client giả agent gửi event/poll command cho device khác | Người ngoài | Opaque access token 15 phút + refresh 30 ngày gắn device, rotation/replay revoke, pin certificate, ownership | API integration hai device; refresh replay và device revoke test |
 | TM02 | Spoofing/EoP | Trẻ giả Tray/helper hoặc khai SID trong payload | Trẻ là attacker | Named Pipe DACL, xác minh token/SID/session phía server, bounds | VM client SID sai bị deny |
 | TM03 | Tampering | Policy cache bị sửa để nới luật | Trẻ/local process | Version + HMAC/chữ ký, ACL ProgramData, atomic apply, giữ bản hợp lệ trước | Test policy sửa byte bị reject |
 | TM04 | Tampering/Replay | Replay command/grant/event làm cộng giờ hoặc đếm đôi | Trẻ/mạng lỗi | UUID/idempotency, expiry, intent/result bền vững, ACK sau commit | Retry/crash/lost ACK test |
@@ -21,11 +21,13 @@ Tài sản cần bảo vệ: danh tính gia đình/trẻ, device secret, policy,
 
 ## Checklist ASVS rút gọn
 
-- [ ] Mọi API ghi có CSRF; cookie HttpOnly/Secure/SameSite=Lax, session 12 giờ và logout server-side.
-- [ ] Password Argon2id/scrypt, ≥10 ký tự; 5 lần sai khóa 15 phút; rate limit theo IP.
+- [x] Mọi API ghi có CSRF; cookie HttpOnly/Secure/SameSite=Lax, session 12 giờ và logout server-side.
+- [x] Password Argon2id/scrypt, ≥10 ký tự; 5 lần sai khóa 15 phút; rate limit theo `(email, IP)`.
 - [ ] Mọi query theo `owner_id`/scope; không dựa vào việc ẩn nút UI.
-- [ ] Secret không log/hardcode; trường nhạy cảm AES-GCM, key env/DPAPI.
+- [x] Enrollment/access/refresh secret không lưu plaintext; enrollment verifier dùng HMAC pepper từ environment, device token lưu hash.
+- [ ] Secret không log/hardcode; credential agent local dùng DPAPI/ACL.
 - [ ] Payload/event/IPC có schema, allowlist, giới hạn kích thước và timestamp/replay guard.
-- [ ] Policy integrity, TLS pinning và token revoke có negative test.
+- [x] Enrollment replay/refresh replay/access expiry/device revoke có negative test.
+- [ ] Policy integrity và TLS pinning có negative test.
 - [ ] Không chế độ ẩn; nếu không thể hiện tray icon thì agent tự dừng an toàn và ghi lỗi tối thiểu.
 - [ ] Privacy/retention/delete-all được kiểm thử trên server và agent cache.

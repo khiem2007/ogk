@@ -129,8 +129,25 @@
 - `docs/evidence/` — C01, C02, C09 evidence files.
 
 ### Tổng kết kiểm tra 2026-11-26
-- **Python**: `pytest tests/ -q` → 22 (cũ) + 14 (tray) = **36 passed**
+- **Python**: `python -m pytest -q` → 22 (cũ) + 14 (tray) = **36 passed**
 - **JS unit**: `cd dashboard && npm test` → **9 passed**
 - **TypeScript**: `tsc --noEmit` → **clean**
 - **Build**: `vite build` → **PASS 282 kB**
 - **check_structure.py**: PASS (chỉ thêm file, không xóa)
+
+## 2026-11-26 — TV1 triển khai A03: authentication và authorization cơ bản
+
+- Đã thêm migration/model auth: role `parent|child-view|admin`, session server-side 12 giờ, login lockout và CSRF hash gắn session.
+- Đã triển khai `POST /api/v1/auth/login`, `POST /api/v1/auth/logout`, `GET /api/v1/auth/me` và `GET /api/v1/auth/children` cùng alias `/auth/*`.
+- Mật khẩu dùng Argon2id; cookie `HttpOnly`, `SameSite=Lax`, `Secure` trong production; mutation logout yêu cầu `X-CSRF-Token` khớp session.
+- 5 lần đăng nhập sai theo `(email, IP)` khóa 15 phút; session hết hạn/revoke từ chối; parent/child-view/admin và ownership query đã được kiểm tra ở backend.
+- Kiểm chứng: `python -m pytest server/tests/test_db_config.py server/tests/test_db_foreign_keys.py server/tests/test_migrations.py server/tests/test_auth.py -q` PASS 9 tests; `python -m alembic -c server/alembic.ini upgrade head` PASS.
+
+## 2026-11-26 — TV1 triển khai A04: enrollment và device token lifecycle
+
+- Đã thêm migration/model enrollment gắn child, credential access, lịch sử refresh-token rotation và throttle thử sai theo IP.
+- Parent tạo enrollment code 8 ký tự, hạn 10 phút, một lần dùng; HMAC-SHA256 verifier yêu cầu `OGK_ENROLLMENT_PEPPER` ổn định, tối thiểu 32 bytes. Sai 5 lần trong 15 phút sẽ khóa IP 15 phút.
+- Agent enroll atomically consume code và tạo device; cấp opaque access token 15 phút cùng refresh token 30 ngày. Token plaintext chỉ trả một lần, DB lưu hash/verifier.
+- Refresh rotate access/refresh; replay token cũ revoke credential. Device bearer auth kiểm tra expiry/revoke; parent chỉ revoke/list device thuộc ownership scope của mình.
+- Đã cập nhật API, ERD, threat model, hướng dẫn cấu hình pepper và `.env.example`. Agent DPAPI/pinning/heartbeat vẫn ngoài A04 (B06/A11).
+- Kiểm chứng sau hợp nhất: `python -m pytest server/tests agent/tests -q` PASS 47 tests; `python -m compileall -q server agent` PASS; `python scripts/check_structure.py` PASS. Có warning deprecation trong pytest/AnyIO dependency, không phát sinh test failure.

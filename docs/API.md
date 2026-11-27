@@ -1,12 +1,14 @@
 # API v1 — OpenGuard Kids
 
-**Mã công việc:** TV1-A01. Contract/schema mẫu nằm trong [contracts/schemas](../contracts/schemas/README.md) và [fixtures](../contracts/fixtures/README.md). Đây là thiết kế, chưa có server runtime/OpenAPI.
+**Mã công việc:** TV1-A01. Contract/schema mẫu nằm trong [contracts/schemas](../contracts/schemas/README.md) và [fixtures](../contracts/fixtures/README.md). API v1 đang được triển khai theo từng task; auth và enrollment/device-token endpoints đã có runtime.
 
 ## 1. Quy ước chung
 
 - Prefix: `/api/v1`; JSON UTF-8; timestamps RFC 3339 UTC (`Z`); IDs UUID.
-- Parent: server-managed session cookie, HttpOnly/SameSite, Secure khi HTTPS; mutation cần CSRF. Parent ID luôn từ session, không nhận qua body.
-- Agent: bearer token riêng device; token hash lưu server; revoke làm mất quyền. Device identity suy ra từ token, không cho body chọn `device_id`.
+- Parent: server-managed session cookie, HttpOnly/SameSite, Secure khi HTTPS; mutation cần CSRF. Session sống 12 giờ, logout revoke server-side. Parent ID luôn từ session, không nhận qua body.
+- Auth: Argon2id, mật khẩu tối thiểu 10 ký tự, 5 lần sai khóa 15 phút theo `(email, IP)`; không trả phân biệt tài khoản/mật khẩu qua response ngoài thông báo auth chung.
+- Agent: opaque bearer access token 15 phút và opaque refresh token 30 ngày; token verifier/hash lưu server. Refresh token rotate mỗi lần dùng; dùng lại token cũ revoke credential. Device identity suy ra từ bearer credential, không cho body chọn `device_id`.
+- Enrollment code: 8 ký tự từ alphabet không có `I`, `O`, `0`, `1`; hạn 10 phút, một lần dùng, gắn với child cụ thể. Hash dùng HMAC-SHA256 với `OGK_ENROLLMENT_PEPPER` (tối thiểu 32 bytes); secret chỉ trả một lần. Sai 5 lần trong 15 phút từ một IP sẽ bị khóa 15 phút.
 - Tất cả parent query/mutation kiểm tra ownership qua device → child → owner. Agent chỉ được thao tác trên device gắn với token.
 - Policy update dùng `If-Match: "<version>"` hoặc `expected_version`; snapshot tăng version atomically. Stale version trả `409 VERSION_CONFLICT`.
 - Schedule `day_of_week` dùng `0=Monday` đến `6=Sunday` (quy ước Python); giờ local theo IANA timezone trong device policy, interval `[start,end)`.
@@ -23,9 +25,9 @@
 | `GET /children` | Parent | Danh sách child thuộc owner. |
 | `POST /children` | Parent + CSRF | Tạo child `{display_name, age_band?, timezone}`. |
 | `PATCH /children/{child_id}` | Parent + CSRF | Sửa child nếu ownership đúng. |
-| `POST /enrollment-codes` | Parent + CSRF | Tạo one-time code; trả code một lần và expiry, không lưu/plaintext log. |
+| `POST /enrollment-codes` | Parent + CSRF | Body `{child_id}`; tạo code 8 ký tự, hạn 10 phút, gắn child thuộc parent; trả code đúng một lần. |
 | `GET /devices` | Parent | Chỉ devices thuộc owner; connection/applied version metadata. |
-| `POST /devices/{device_id}/revoke` | Parent + CSRF | Revoke credential; audit; `204`. |
+| `POST /devices/{device_id}/revoke` | Parent + CSRF | Revoke device và credential; audit; `204`. |
 | `GET /devices/{device_id}/policy` | Parent | Snapshot/version hiện hành. |
 | `PUT /devices/{device_id}/policy` | Parent + CSRF + `If-Match` | Validate policy, create immutable next version, audit; trả snapshot mới. |
 | `GET /requests?status=pending` | Parent | Requests thuộc owner, phân trang. |
@@ -39,7 +41,9 @@
 
 | Method/path | Auth | Ý nghĩa / response |
 |---|---|---|
-| `POST /agent/enroll` | Enrollment code + TLS | Consume code một lần; gắn device; trả token device một lần + initial config. Không nhận owner/device identity làm authority từ client. |
+| `POST /agent/enroll` | Enrollment code + TLS | Body `{code,name,windows_sid?}`; consume atomically, gắn device với child đã bind; trả access/refresh token một lần. Không nhận owner/device identity làm authority từ client. |
+| `POST /agent/refresh` | Refresh token + TLS | Body `{refresh_token}`; rotate refresh token và access token. Replay refresh token cũ revoke credential. |
+| `GET /agent/me` | Device bearer | Kiểm tra bearer token chưa hết hạn/revoke; trả device identity suy ra từ token. |
 | `GET /agent/policy?version={n}` | Device bearer | Trả current immutable policy nếu version khác, hoặc `304`; device được suy ra từ token. |
 | `POST /agent/heartbeat` | Device bearer | `last_seen`, applied policy version, agent version, bounded health state; server trả desired policy version/command hint. |
 | `POST /agent/events/batch` | Device bearer | Bounded batch event; dedup/commit; trả ACK ID list sau commit. |
@@ -48,6 +52,8 @@
 | `POST /agent/commands/{command_id}/ack` | Device bearer | Result `{status: executed|failed, observed_at, result_code}`; idempotent, command phải thuộc token device. |
 
 Heartbeat 60s và command polling ~5s là target ban đầu; jitter/backoff và server load phải được đo. Agent luôn kết nối outbound; server không mở kết nối vào máy trẻ.
+
+Enrollment code chỉ được tạo với `OGK_ENROLLMENT_PEPPER` đã cấu hình; production cần giữ giá trị này ổn định và bí mật để xác minh code đang còn hiệu lực. Thay pepper làm các enrollment code chưa dùng mất hiệu lực. Access token chỉ hợp lệ trong 15 phút; agent cần refresh trước khi hết hạn. Mọi endpoint agent phải dùng dependency xác thực device, không tự đọc `device_id` từ request body.
 
 ## 4. Policy-to-event flow
 
