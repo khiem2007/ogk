@@ -34,7 +34,8 @@
 | `PUT /devices/{device_id}/policy` | Parent + CSRF + `If-Match` hoặc `expected_version` | Body `{policy, expected_version?}`; validate schema, create immutable signed next version, audit; trả ETag và snapshot mới. `If-Match` phải là version quoted; lần đầu dùng version `0`. |
 | `GET /requests?status=pending` | Parent | Requests thuộc owner, phân trang. |
 | `POST /requests/{request_id}/decision` | Parent + CSRF | `{decision: approved|rejected, grant?}`; một transition atomic, trả request và grant nếu tạo. |
-| `POST /devices/{device_id}/commands` | Parent + CSRF | Tạo allowlisted command có expiry; trả `queued`, chưa phải executed. |
+| `POST /devices/{device_id}/commands` | Parent + CSRF | Tạo allowlisted command có expiry và dedup key; trả `queued`, chưa phải executed. |
+| `GET /devices/{device_id}/commands` | Parent | Lịch sử command và lifecycle hiện tại của đúng device. |
 | `GET /reports/daily` | Parent | Filter `device_id`, `date`; timezone của device; usage/block counts/delayed indicators. |
 | `GET /reports/weekly` | Parent | Filter `device_id`, `week_start`; tuần theo local date. |
 | `GET /audit` | Parent | Filter/paginate audit thuộc owner; secrets đã redacted. |
@@ -51,7 +52,8 @@
 | `POST /agent/events/batch` | Device bearer | Nhận `{events}` tối đa 100 envelope; validate allowlist payload, dedup atomically theo `(device_id,event_id)`, commit rồi mới trả `acknowledged_event_ids,accepted_count,replayed_count,server_time`. Replay/lost ACK không nhân usage hoặc event. |
 | `POST /agent/requests` | Device bearer | Tạo/nhận lại request theo stable request ID; server gắn device. |
 | `GET /agent/commands` | Device bearer | Poll queued commands cho đúng device; lệnh hết hạn trả/đánh dấu expired, không deliver để chạy muộn. |
-| `POST /agent/commands/{command_id}/ack` | Device bearer | Result `{status: executed|failed, observed_at, result_code}`; idempotent, command phải thuộc token device. |
+| `POST /agent/commands/{command_id}/ack` | Device bearer | Result `{status: executed|failed|expired, observed_at, result_code}`; idempotent, replay cùng kết quả không nhân audit, command phải thuộc token device. |
+| `WS /agent/commands/notify?access_token=...` | Device access token | Notification chỉ phát `command.created` với `command_id`; polling và queue vẫn là authority, reconnect không mất intent. |
 
 Heartbeat 60s và command polling ~5s là target ban đầu; jitter/backoff và server load phải được đo. Agent luôn kết nối outbound; server không mở kết nối vào máy trẻ.
 

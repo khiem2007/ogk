@@ -167,3 +167,11 @@
 - Thêm `POST /api/v1/agent/events/batch` tối đa 100 event, validation envelope/payload theo allowlist, transaction SQLite, dedup `(device_id,event_id)` và ACK chỉ sau commit.
 - Replay/lost ACK, event trùng trong cùng batch và replay sau khi đã commit không nhân `UsageInterval` hoặc `DeviceEvent`; payload sai hoặc batch vượt bound không commit dữ liệu.
 - Kiểm chứng: test integration A06 pass cho heartbeat, auth bearer, batch usage, replay, duplicate trong batch, invalid payload và batch bound; ngưỡng 180 giây có unit assertion.
+
+## 2026-11-28 — TV1 triển khai A08: command queue/ACK/audit/WebSocket notify
+
+- Thêm API parent tạo/lịch sử allowlisted command; command dùng dedup `(device_id,dedup_key)`, expiry và lifecycle `queued/delivered/executed/failed/expired`.
+- Thêm API agent polling và ACK; delivery không suy ra execution, ACK replay trùng không nhân audit, ACK conflict không ghi đè kết quả đã chốt.
+- Thêm WebSocket notify `command.created` theo device access token; notification không thay polling/queue và reconnect vẫn nhận pending intent.
+- Thêm timestamps issued/delivered/resolved và migration lifecycle; audit ghi issue/delivery/result/expiry.
+- Kiểm chứng: `python -m pytest tests/integration -q` — 31 passed.
