@@ -38,8 +38,17 @@ def test_rollback_and_sleep_gap_are_not_credited(tmp_path):
     clock.advance(1)
     assert counter.observe(ACTIVE) == 0
     assert counter.clock_rollback_detected
+    clock.advance(10)
+    assert counter.observe(ACTIVE) == 0
+    assert counter.clock_rollback_detected
     clock.advance(3600)
     assert counter.observe(ACTIVE) == 0
     assert counter.degraded
     assert counter.seconds("2026-11-02") == 10
     counter.close()
+    restarted = UsageCounter(tmp_path / "usage.db", clock, "UTC")
+    restarted.observe(ACTIVE)
+    clock.advance(10)
+    assert restarted.observe(ACTIVE) == 0
+    assert restarted.seconds("2026-11-02") == 10
+    restarted.close()

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import sqlite3
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -36,7 +36,10 @@ class UsageCounter:
         self.max_sample_gap = max_sample_gap
         self.connection = sqlite3.connect(database)
         self.connection.execute("CREATE TABLE IF NOT EXISTS usage (day TEXT NOT NULL, app_id TEXT NOT NULL, seconds INTEGER NOT NULL, PRIMARY KEY(day, app_id))")
+        self.connection.execute("CREATE TABLE IF NOT EXISTS state (key TEXT PRIMARY KEY, value TEXT NOT NULL)")
         self.connection.commit()
+        stored = self.connection.execute("SELECT value FROM state WHERE key='wall_high_water'").fetchone()
+        self._wall_high_water = datetime.fromisoformat(stored[0]) if stored else None
         self._previous_monotonic: float | None = None
         self._previous_wall: datetime | None = None
         self._previous_sample: Sample | None = None
@@ -46,14 +49,19 @@ class UsageCounter:
 
     def observe(self, sample: Sample) -> int:
         mono = self.clock.monotonic()
-        wall = self.clock.now_utc()
+        wall = self.clock.now_utc().astimezone(timezone.utc)
+        behind_high_water = self._wall_high_water is not None and wall < self._wall_high_water
+        if self._wall_high_water is None or wall > self._wall_high_water:
+            self._wall_high_water = wall
+            self.connection.execute("INSERT INTO state(key, value) VALUES ('wall_high_water', ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value", (wall.isoformat(),))
+            self.connection.commit()
         credited = 0
         if self._previous_monotonic is not None and self._previous_wall is not None:
             delta = mono - self._previous_monotonic
             wall_delta = (wall - self._previous_wall).total_seconds()
-            self.clock_rollback_detected = wall_delta < -1
-            self.degraded = delta < 0 or delta > self.max_sample_gap or not sample.telemetry_fresh
-            if 0 <= delta <= self.max_sample_gap and self._previous_sample and self._previous_sample.measured and sample.measured:
+            self.clock_rollback_detected = behind_high_water or wall_delta < -1
+            self.degraded = delta < 0 or delta > self.max_sample_gap or not sample.telemetry_fresh or behind_high_water
+            if not behind_high_water and 0 <= delta <= self.max_sample_gap and self._previous_sample and self._previous_sample.measured and sample.measured:
                 # Do not assign a crossing-midnight interval to either day.
                 if wall_delta >= 0 and self._previous_wall.astimezone(self.zone).date() == wall.astimezone(self.zone).date():
                     seconds = delta + self._fraction
