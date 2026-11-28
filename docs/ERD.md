@@ -40,7 +40,7 @@ Parent resource query bắt buộc scope `child.owner_id = authenticated_user.id
 | `device_refresh_tokens` | `id`, `credential_id`, `token_hash`, `expires_at`, `consumed_at`, `created_at` | Hash unique; mỗi refresh consume token cũ và tạo token mới; replay revoke credential. |
 | `enrollment_codes` | `id`, `owner_id`, `child_id`, `code_prefix`, `code_hash`, `expires_at`, `consumed_at`, `attempt_count` | HMAC verifier; 8 ký tự, one-time/10 phút; gắn child; consume cùng transaction tạo device. |
 | `enrollment_attempts` | `ip_address`, `failed_count`, `window_started_at`, `locked_until` | 5 lần sai trong 15 phút khóa IP thêm 15 phút; không lưu code/token plaintext. |
-| `policies` | `id`, `device_id`, `version`, `document_json`, `created_by`, `created_at` | Snapshot bất biến; unique `(device_id, version)`. |
+| `policies` | `id`, `device_id`, `version`, `document_json`, `created_by`, `created_at` | Signed snapshot bất biến; unique `(device_id, version)`. Canonical Ed25519 signature; server không overwrite lịch sử. |
 | `app_catalog` | `id`, `owner_id`, `display_name`, `normalized_exe_name/path`, `category` | App do parent cấu hình; không suy ra usage từ app nền. |
 | `usage_intervals` | `id`, `event_id`, `device_id`, `start_utc`, `end_utc`, `active_seconds`, `app_id`, `sequence`, `boot_id` | Unique `(device_id,event_id)`; `end > start`; app seconds là tập con machine seconds. |
 | `device_events` | `id`, `event_id`, `device_id`, `event_type`, `observed_at`, `reason_code`, `payload_json` | Unique `(device_id,event_id)`; schema/size bounded; không full URL/secret. |
@@ -67,7 +67,7 @@ Local DB/token nằm trong thư mục ACL của service/admin; SQLite connection
 
 - Bật foreign keys; unique keys cho event, policy version, command dedup và grant idempotency.
 - Enrollment: verify code/expiry/attempts, create device và consume code trong một transaction.
-- Policy update: `If-Match`/expected version; insert snapshot mới, không overwrite lịch sử.
+- Policy update: `If-Match`/expected version; lock device row, compare current version, then insert signed snapshot mới cùng audit trong một transaction. Conflict không thay đổi snapshot hiện hành.
 - Parent decision: conditional update từ `pending`; tạo grant và audit cùng transaction; rowcount != 1 trả conflict.
 - Event ingest: insert dedup rows và trả ACK IDs chỉ sau commit.
 - Command ACK: conditional state transition + filtered result; OS effect không thể được bảo đảm exactly-once bởi DB.

@@ -9,7 +9,8 @@
         "device_id",
         "policy_version",
         "issued_at",
-        "policy"
+        "policy",
+        "signature"
     ],
     "properties": {
         "schema_version": {
@@ -205,6 +206,28 @@
                             }
                         }
                     }
+                }
+            }
+        },
+        "signature": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "algorithm",
+                "key_id",
+                "value"
+            ],
+            "properties": {
+                "algorithm": {
+                    "const": "Ed25519"
+                },
+                "key_id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9._-]{1,64}$"
+                },
+                "value": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9+/]{86}==$"
                 }
             }
         }
