@@ -175,3 +175,10 @@
 - Thêm WebSocket notify `command.created` theo device access token; notification không thay polling/queue và reconnect vẫn nhận pending intent.
 - Thêm timestamps issued/delivered/resolved và migration lifecycle; audit ghi issue/delivery/result/expiry.
 - Kiểm chứng: `python -m pytest tests/integration -q` — 31 passed.
+
+## 2026-11-28 — TV1 triển khai A09: report/audit/retention/delete-all
+
+- Thêm báo cáo daily/weekly theo timezone của child, dedup interval, top 10 app/domain, block/request summary và trạng thái telemetry thiếu.
+- Thêm audit pagination/cursor và redaction; ownership áp dụng cho parent/child-view/admin.
+- Thêm retention 90 ngày theo batch cho usage, events, audit, request, grant và command; thêm delete-all với CSRF và command agent allowlisted.
+- Thêm migration index report/retention và test integration A09.

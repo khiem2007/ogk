@@ -71,7 +71,7 @@ Local DB/token nằm trong thư mục ACL của service/admin; SQLite connection
 - Parent decision: conditional update từ `pending`; tạo grant và audit cùng transaction; rowcount != 1 trả conflict.
 - Event ingest: insert dedup rows và trả ACK IDs chỉ sau commit.
 - Command ACK: conditional state transition + filtered result; OS effect không thể được bảo đảm exactly-once bởi DB.
-- Report index theo device/time; event/usage retention mặc định lab 30 ngày, audit 90 ngày (cần cấu hình/test ở milestone implementation).
+- Report index theo device/time; retention mặc định 90 ngày cho usage, device event, audit, request, grant và command; cleanup chạy theo batch và delete-all giữ tombstone audit tối thiểu/redacted.
 
 ## Chưa chốt trong A01
 

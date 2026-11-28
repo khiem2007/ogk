@@ -38,7 +38,8 @@
 | `GET /devices/{device_id}/commands` | Parent | Lịch sử command và lifecycle hiện tại của đúng device. |
 | `GET /reports/daily` | Parent | Filter `device_id`, `date`; timezone của device; usage/block counts/delayed indicators. |
 | `GET /reports/weekly` | Parent | Filter `device_id`, `week_start`; tuần theo local date. |
-| `GET /audit` | Parent | Filter/paginate audit thuộc owner; secrets đã redacted. |
+| `GET /audit` | Parent, child-view | Filter/paginate audit thuộc owner/child; secrets và payload nhạy cảm đã redacted. |
+| `POST /children/{child_id}/delete-all` | Parent + CSRF | Idempotent delete dữ liệu server của child, enqueue `DELETE_ALL_DATA` cho từng device và ghi tombstone audit redacted. |
 
 ## 3. Agent endpoints
 

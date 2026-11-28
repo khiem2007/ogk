@@ -17,14 +17,14 @@ from server.app.services.policy import get_owned_device
 
 router = APIRouter()
 
-ALLOWLIST = {"LOCK_SESSION", "CLEAR_MANUAL_LOCK", "TEMPORARY_TIME_EXEMPTION", "EXEMPT_UNTIL_LOCAL_DAY_END"}
+ALLOWLIST = {"LOCK_SESSION", "CLEAR_MANUAL_LOCK", "TEMPORARY_TIME_EXEMPTION", "EXEMPT_UNTIL_LOCAL_DAY_END", "DELETE_ALL_DATA"}
 _PENDING_NOTIFICATIONS: dict[str, set[str]] = {}
 
 
 class CreateCommandRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     command_id: str | None = Field(default=None, min_length=36, max_length=36)
-    command_type: Literal["LOCK_SESSION", "CLEAR_MANUAL_LOCK", "TEMPORARY_TIME_EXEMPTION", "EXEMPT_UNTIL_LOCAL_DAY_END"]
+    command_type: Literal["LOCK_SESSION", "CLEAR_MANUAL_LOCK", "TEMPORARY_TIME_EXEMPTION", "EXEMPT_UNTIL_LOCAL_DAY_END", "DELETE_ALL_DATA"]
     expires_at: datetime
     payload: dict = Field(default_factory=dict)
     dedup_key: str | None = Field(default=None, min_length=36, max_length=36)
@@ -88,6 +88,10 @@ def _validate_payload(command_type: str, payload: dict) -> dict:
         if payload["duration_seconds"] != 900 or payload["scope"] != "time_limits":
             raise HTTPException(status_code=422, detail="COMMAND_PAYLOAD_INVALID")
         return {"grant_id": grant_id, "duration_seconds": 900, "scope": "time_limits"}
+    if command_type == "DELETE_ALL_DATA":
+        if payload:
+            raise HTTPException(status_code=422, detail="COMMAND_PAYLOAD_INVALID")
+        return {}
     if command_type == "EXEMPT_UNTIL_LOCAL_DAY_END":
         if set(payload) != {"grant_id", "scope"}:
             raise HTTPException(status_code=422, detail="COMMAND_PAYLOAD_INVALID")
