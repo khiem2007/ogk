@@ -166,3 +166,9 @@
 - Thêm `POST /api/v1/agent/events/batch` tối đa 100 event, validation envelope/payload theo allowlist, transaction SQLite, dedup `(device_id,event_id)` và ACK chỉ sau commit.
 - Replay/lost ACK, event trùng trong cùng batch và replay sau khi đã commit không nhân `UsageInterval` hoặc `DeviceEvent`; payload sai hoặc batch vượt bound không commit dữ liệu.
 - Kiểm chứng: test integration A06 pass cho heartbeat, auth bearer, batch usage, replay, duplicate trong batch, invalid payload và batch bound; ngưỡng 180 giây có unit assertion.
+
+## 2026-11-28 — TV2: nền B03/B04
+
+- Đã thêm policy evaluator thuần Python cho precedence manual lock, app block/exception, lịch nửa mở, daily/category quota và grant; có ngưỡng cảnh báo 10/5/1 phút.
+- Đã thêm counter checkpoint SQLite chỉ tính sample active/unlocked/awake/fresh, dùng monotonic trong một tiến trình; bỏ qua gap khi sleep/restart và phát hiện wall-clock rollback.
+- Unit tests bao gồm precedence, giới hạn grant, restart, locked interval, clock rollback và sleep gap. Đây là nền core; B03 vẫn thiếu simulator/grace enforcement, B04 còn thiếu split interval tại local midnight/policy transition và server-time check. B05–B10 chưa có implementation production hoặc nghiệm thu Windows VM.
