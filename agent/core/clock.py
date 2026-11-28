@@ -48,11 +48,13 @@ class FakeClock(Clock):
             raise ValueError("start_utc must be timezone-aware")
         if monotonic_start < 0:
             raise ValueError("monotonic_start must be non-negative")
+
         self._now_utc = start_utc.astimezone(timezone.utc)
         self._monotonic = float(monotonic_start)
         self._lock = RLock()
 
     def now_utc(self) -> datetime:
+        # Serialize access so readers cannot observe a partially updated clock.
         with self._lock:
             return self._now_utc
 
