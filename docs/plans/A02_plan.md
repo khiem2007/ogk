@@ -28,10 +28,10 @@ A02 (`TV1`, 29–30/10/2026, phụ thuộc A01) cần đưa bộ khung FastAPI/S
 - `server/migrations/script.py.mako`: template migration chuẩn Alembic.
 - `server/migrations/versions/<revision>_initial_schema.py`: migration baseline, tạo tất cả bảng/khóa ngoại/index/unique constraints theo ERD và migration date; đặt `PRAGMA foreign_keys=ON` ở môi trường migration.
 - `tests/conftest.py`: fixture temporary SQLite database, engine/session/DB override, gọi Alembic upgrade tới `head`, cleanup DB/WAL/SHM.
-- `tests/unit/test_db_config.py`: kiểm tra parsing config và dependency không phụ thuộc Windows.
-- `tests/unit/test_db_foreign_keys.py`: kiểm tra foreign key enforcement và quan hệ cascade/restrict/reject theo quyết định model.
-- `tests/integration/test_migrations.py`: upgrade DB trống, downgrade/upgrade lại (nếu được hỗ trợ), so khớp critical table/column/index/unique/FK sau migrate.
-- `tests/integration/test_db_concurrency.py`: kiểm tra concurrent read/write, locked writer timeout/busy timeout và WAL cho phép reader không bị chặn bởi writer đang giữ transaction.
+- `server/tests/test_db_config.py`: kiểm tra parsing config và dependency không phụ thuộc Windows.
+- `server/tests/test_db_foreign_keys.py`: kiểm tra foreign key enforcement và quan hệ cascade/restrict/reject theo quyết định model.
+- `server/tests/test_migrations.py`: upgrade DB trống, downgrade/upgrade lại (nếu được hỗ trợ), so khớp critical table/column/index/unique/FK sau migrate.
+- `server/tests/test_db_concurrency.py`: kiểm tra concurrent read/write, locked writer timeout/busy timeout và WAL cho phép reader không bị chặn bởi writer đang giữ transaction.
 
 ## Các file có thể cần cập nhật
 

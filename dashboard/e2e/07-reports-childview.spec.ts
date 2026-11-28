@@ -1,5 +1,5 @@
 /**
- * tests/e2e/07-reports-childview.spec.ts
+ * dashboard/e2e/07-reports-childview.spec.ts
  * ========================================
  * T12–T14: Reports, child-view, delete-all, mobile viewport, accessibility.
  *

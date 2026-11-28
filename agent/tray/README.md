@@ -37,7 +37,7 @@ python -m agent.tray.app
 
 ```bash
 source .venv/bin/activate
-QT_QPA_PLATFORM=offscreen python -m pytest tests/unit/test_tray_state.py -v
+QT_QPA_PLATFORM=offscreen python -m pytest agent/tests/test_tray_state.py -v
 ```
 
 Kết quả dự kiến: **14 passed**

@@ -50,14 +50,14 @@
 
 ### Phạm vi kiểm chứng và giới hạn
 
-- `pytest tests/unit -q` đạt **15 passed**; `compileall`, import `agent.core` và `scripts/check_structure.py` đều PASS.
+- `pytest agent/tests -q` đạt **15 passed**; `compileall`, import `agent.core` và `scripts/check_structure.py` đều PASS.
 - Smoke-test read-only trên Windows host bằng CPython 3.13 + pywin32 312 + psutil 7.2.2: WTS đọc đúng Session 0 và phiên console; foreground/PID/process/idle đọc được; IPC từ chối replay/payload quá cỡ/timestamp cũ; DNS backup và restore plan chạy được. Không gọi nhánh `--execute`.
 - Chưa có Windows VM hai tài khoản, nên smoke-test host không phải nghiệm thu đầy đủ B01. Chưa thử live Named Pipe với SID sai, disconnect/lock thật, DNS restore thật hoặc adapter DNS Static.
 - B01 mới là spike, chưa phải Windows service B05 hay DNS adapter transactional B09.
 
 ### Bước tiếp theo
 
-1. Chạy checklist `scripts/spikes/README.md` trên snapshot VM và lưu evidence đã che dữ liệu.
+1. Chạy checklist `agent/spikes/README.md` trên snapshot VM và lưu evidence đã che dữ liệu.
 2. TV1/TV3 review ADR D03/D04; chỉ Accepted sau test VM.
 3. Dùng model/clock B02 làm nền cho B03/B04.
 
@@ -77,7 +77,7 @@
 - Đã thêm Alembic baseline `20261123_001_initial_schema.py`; migration tạo DB trống với foreign key, unique constraint và index ERD.
 - Kết nối SQLite bật `foreign_keys=ON`, `journal_mode=WAL` và `busy_timeout=5000`; app chạy lab với một worker SQLite.
 - Đã thêm unit/integration tests cho pragmas, foreign key, unique event, migration trống và concurrent reader/writer/lock contention.
-- Kiểm chứng: `python -m alembic upgrade head` PASS; `python -m pytest tests/unit tests/integration -q` PASS 22 tests; `python scripts/check_structure.py` PASS.
+- Kiểm chứng: `python -m alembic -c server/alembic.ini upgrade head` PASS; `python -m pytest server/tests agent/tests -q` PASS 22 tests; `python scripts/check_structure.py` PASS.
 - Chưa triển khai auth, enrollment, API nghiệp vụ hoặc retention/report; các dependency và phạm vi A03 trở đi chưa thuộc A02.
 
 ## 2026-11-26 — TV3 C01–C10: Dashboard, Tray, E2E, Docs
@@ -101,8 +101,8 @@
 
 ### C05 ✅ — Tray UI (PySide6)
 - `agent/tray/__init__.py`, `models.py`, `ipc_client.py`, `app.py` — TrayState, IPCClient, OgkTrayApp.
-- `tests/unit/test_tray_state.py` — 14 tests PASS (NT2, offline queue, warning thresholds, IPC).
-- Lệnh: `QT_QPA_PLATFORM=offscreen python -m pytest tests/unit/test_tray_state.py -v`
+- `agent/tests/test_tray_state.py` — 14 tests PASS (NT2, offline queue, warning thresholds, IPC).
+- Lệnh: `QT_QPA_PLATFORM=offscreen python -m pytest agent/tests/test_tray_state.py -v`
 
 ### C06 ✅ — Requests & Commands Dashboard
 - `dashboard/src/pages/RequestsPage.tsx` — approve/reject atomic transition.
@@ -117,24 +117,23 @@
 
 ### C09 ✅ — E2E Playwright Tests
 - `dashboard/playwright.config.ts` — Firefox only, Vite auto-start, demo mode.
-- `tests/e2e/fixtures.ts` — shared authed page fixture.
-- `tests/e2e/01-login.spec.ts` → `07-reports-childview.spec.ts` — 17 test cases (T01–T15).
+- `dashboard/e2e/fixtures.ts` — shared authed page fixture.
+- `dashboard/e2e/01-login.spec.ts` → `07-reports-childview.spec.ts` — 17 test cases (T01–T15).
 - Lệnh: `cd dashboard && npx playwright test`
 
 ### C10 ✅ — Documentation
 - `dashboard/README.md` — cập nhật với install/run/test/build commands.
 - `agent/tray/README.md` — cập nhật với kiến trúc, cài đặt, quy tắc.
-- `tests/e2e/README.md` — cập nhật với 17 test cases.
+- `dashboard/e2e/README.md` — cập nhật với 17 test cases.
 - `docs/AI_USAGE.md` — thêm dòng TV3 với bằng chứng kiểm thử.
 - `docs/evidence/` — C01, C02, C09 evidence files.
 
 ### Tổng kết kiểm tra 2026-11-26
-- **Python**: `pytest tests/ -q` → 22 (cũ) + 14 (tray) = **36 passed**
+- **Python**: `python -m pytest -q` → 22 (cũ) + 14 (tray) = **36 passed**
 - **JS unit**: `cd dashboard && npm test` → **9 passed**
 - **TypeScript**: `tsc --noEmit` → **clean**
 - **Build**: `vite build` → **PASS 282 kB**
 - **check_structure.py**: PASS (chỉ thêm file, không xóa)
-
 
 ## 2026-11-26 — TV1 triển khai A03: authentication và authorization cơ bản
 
@@ -142,7 +141,7 @@
 - Đã triển khai `POST /api/v1/auth/login`, `POST /api/v1/auth/logout`, `GET /api/v1/auth/me` và `GET /api/v1/auth/children` cùng alias `/auth/*`.
 - Mật khẩu dùng Argon2id; cookie `HttpOnly`, `SameSite=Lax`, `Secure` trong production; mutation logout yêu cầu `X-CSRF-Token` khớp session.
 - 5 lần đăng nhập sai theo `(email, IP)` khóa 15 phút; session hết hạn/revoke từ chối; parent/child-view/admin và ownership query đã được kiểm tra ở backend.
-- Kiểm chứng: `python -m pytest tests/unit/test_db_config.py tests/unit/test_db_foreign_keys.py tests/integration/test_migrations.py tests/integration/test_auth.py -q` PASS 9 tests; `python -m alembic upgrade head` PASS.
+- Kiểm chứng: `python -m pytest server/tests/test_db_config.py server/tests/test_db_foreign_keys.py server/tests/test_migrations.py server/tests/test_auth.py -q` PASS 9 tests; `python -m alembic -c server/alembic.ini upgrade head` PASS.
 
 ## 2026-11-26 — TV1 triển khai A04: enrollment và device token lifecycle
 
@@ -151,7 +150,7 @@
 - Agent enroll atomically consume code và tạo device; cấp opaque access token 15 phút cùng refresh token 30 ngày. Token plaintext chỉ trả một lần, DB lưu hash/verifier.
 - Refresh rotate access/refresh; replay token cũ revoke credential. Device bearer auth kiểm tra expiry/revoke; parent chỉ revoke/list device thuộc ownership scope của mình.
 - Đã cập nhật API, ERD, threat model, hướng dẫn cấu hình pepper và `.env.example`. Agent DPAPI/pinning/heartbeat vẫn ngoài A04 (B06/A11).
-- Kiểm chứng: `python -m pytest tests/unit tests/integration -q` PASS 33 tests; `python -m compileall -q server tests` PASS; `python scripts/check_structure.py` PASS. Có một warning deprecation trong pytest/AnyIO dependency, không phát sinh test failure.
+- Kiểm chứng sau hợp nhất: `python -m pytest server/tests agent/tests -q` PASS 47 tests; `python -m compileall -q server agent` PASS; `python scripts/check_structure.py` PASS. Có warning deprecation trong pytest/AnyIO dependency, không phát sinh test failure.
 
 ## 2026-11-27 — TV1 triển khai A05: signed policy snapshots
 
@@ -174,7 +173,7 @@
 - Thêm API agent polling và ACK; delivery không suy ra execution, ACK replay trùng không nhân audit, ACK conflict không ghi đè kết quả đã chốt.
 - Thêm WebSocket notify `command.created` theo device access token; notification không thay polling/queue và reconnect vẫn nhận pending intent.
 - Thêm timestamps issued/delivered/resolved và migration lifecycle; audit ghi issue/delivery/result/expiry.
-- Kiểm chứng: `python -m pytest tests/integration -q` — 31 passed.
+- Kiểm chứng: `python -m pytest server/tests -q` — 31 passed trên nhánh A08.
 
 ## 2026-11-28 — TV1 triển khai A09: report/audit/retention/delete-all
 
@@ -182,3 +181,9 @@
 - Thêm audit pagination/cursor và redaction; ownership áp dụng cho parent/child-view/admin.
 - Thêm retention 90 ngày theo batch cho usage, events, audit, request, grant và command; thêm delete-all với CSRF và command agent allowlisted.
 - Thêm migration index report/retention và test integration A09.
+
+## 2026-11-28 — TV2: nền B03/B04
+
+- Đã thêm policy evaluator thuần Python cho precedence manual lock, app block/exception, lịch nửa mở, daily/category quota và grant; có ngưỡng cảnh báo 10/5/1 phút.
+- Đã thêm counter checkpoint SQLite chỉ tính sample active/unlocked/awake/fresh, dùng monotonic trong một tiến trình; bỏ qua gap khi sleep/restart và phát hiện wall-clock rollback.
+- Unit tests bao gồm precedence, giới hạn grant, restart, locked interval, clock rollback và sleep gap. Đây là nền core; B03 vẫn thiếu simulator/grace enforcement, B04 còn thiếu split interval tại local midnight/policy transition và server-time check. B05–B10 chưa có implementation production hoặc nghiệm thu Windows VM.

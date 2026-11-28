@@ -30,8 +30,8 @@
 - Đã thêm `server/app/api/commands.py` với tạo/lịch sử command, polling, ACK, lifecycle audit và WebSocket notify.
 - Đã đăng ký router trong `server/app/main.py`.
 - Đã mở rộng model `Command` và migration `20261128_004_command_lifecycle.py` với issued/delivered/resolved timestamps.
-- Đã bổ sung API documentation và integration tests `tests/integration/test_commands.py`.
-- Validation: `python -m pytest tests/integration -q` — 31 passed.
+- Đã bổ sung API documentation và integration tests `server/tests/test_commands.py`.
+- Validation: `python -m pytest server/tests -q` — 31 passed trên nhánh A08.
 
 ## Ghi chú
 - Không shell: server không nhận payload tự do hay thực thi OS effect.

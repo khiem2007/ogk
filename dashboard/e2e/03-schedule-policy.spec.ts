@@ -1,5 +1,5 @@
 /**
- * tests/e2e/03-schedule-policy.spec.ts
+ * dashboard/e2e/03-schedule-policy.spec.ts
  * =====================================
  * T03: Schedule 7×48 matrix & policy version conflict.
  *

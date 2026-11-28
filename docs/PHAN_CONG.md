@@ -11,8 +11,8 @@ Mỗi dòng là một task có thể chuyển thành GitHub issue; trạng thái
 | Thành viên | Vai trò chính | Sở hữu file | Người review chính |
 |---|---|---|---|
 | TV1 — điền tên | Backend, dữ liệu, API; DNS resolver; triển khai server | server/, agent/dns/, deploy/, contracts/ | TV2; TV3 review API UI |
-| TV2 — điền tên | Core policy/counter, Windows service/helper, sync; DNS adapter | agent/core/, agent/windows/, scripts/spikes/ | TV1; TV3 review IPC/Tray |
-| TV3 — điền tên | Dashboard, Tray, E2E, tài liệu người dùng và demo | dashboard/, agent/tray/, tests/e2e/ | TV1; TV2 review IPC |
+| TV2 — điền tên | Core policy/counter, Windows service/helper, sync; DNS adapter | agent/core/, agent/windows/, agent/spikes/ | TV1; TV3 review IPC/Tray |
+| TV3 — điền tên | Dashboard, Tray, E2E, tài liệu người dùng và demo | dashboard/, agent/tray/, dashboard/e2e/ | TV1; TV2 review IPC |
 
 DNS chia resolver (TV1) và adapter Windows (TV2); Tray do TV3 viết UI, TV2 giữ helper/IPC.
 Không giao toàn bộ test cho TV3: ai viết module phải viết unit/integration của module đó.
@@ -40,7 +40,7 @@ Tổng đầu việc TV1: **110 giờ**, dành thêm **26 giờ** cho review, h�
 
 | Mã | Tuần | Bắt đầu | Deadline | Giờ | Phụ thuộc | Công việc và đầu ra | Kiến thức cần học | Bài thực hành / tiêu chí nghiệm thu |
 |---|---|---|---|---:|---|---|---|---|
-| B01 | 1 | 26/10/2026 | 29/10/2026 | 16 | — | Spike SID/session, foreground/idle, IPC ACL, lock/disconnect, DNS backup; scripts/spikes | Windows Session 0, LocalSystem, SID, WTS, named pipe ACL, quyền admin | VM có phụ huynh/trẻ; đọc đúng phiên; phân biệt locked/disconnected; ghi ADR D03/D04 |
+| B01 | 1 | 26/10/2026 | 29/10/2026 | 16 | — | Spike SID/session, foreground/idle, IPC ACL, lock/disconnect, DNS backup; agent/spikes | Windows Session 0, LocalSystem, SID, WTS, named pipe ACL, quyền admin | VM có phụ huynh/trẻ; đọc đúng phiên; phân biệt locked/disconnected; ghi ADR D03/D04 |
 | B02 | 1 | 30/10/2026 | 01/11/2026 | 8 | A01,B01 | Thiết kế core models, Decision, clock; agent/core | Dataclass/typing, dependency inversion, wall-clock vs monotonic, fake clock | Core import không cần Windows; test fixture decision với reason_code thống nhất |
 | B03 | 2 | 02/11/2026 | 04/11/2026 | 12 | B02, A01/A05 contract | Engine lịch 7×48/quota/app/manual lock/grant; warnings/grace; simulator | Interval [start,end), timezone, precedence, 10/5/1 phút, grace 60s | Quota 3 phút; slot 30 phút; khóa trong 5s sau grace; fake clock không sleep thật |
 | B04 | 2 | 05/11/2026 | 07/11/2026 | 10 | B02,B03 | Counter/checkpoint/restart, midnight/clock rollback và server-time check | Foreground intervals, idle>5m, persistence, monotonic, high-water | Sai số ≤±30s/giờ; lùi 3h không tăng quota và phát clock event; sleep không tăng |

@@ -1,5 +1,5 @@
 /**
- * tests/e2e/02-children-pairing.spec.ts
+ * dashboard/e2e/02-children-pairing.spec.ts
  * ======================================
  * T02: Child profile & enrollment code.
  *

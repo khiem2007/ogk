@@ -179,7 +179,7 @@ Ví dụ cần hiểu:
 
 ## 10. Hồ sơ cần có để bàn giao tuần 1
 
-- [ ] Script và hướng dẫn chạy spike trong `scripts/spikes/`.
+- [ ] Script và hướng dẫn chạy spike trong `agent/spikes/`.
 - [ ] Log SID/session của phụ huynh, trẻ và service; chứng minh đọc đúng phiên.
 - [ ] Kết quả foreground/idle, khóa/mở khóa và tình huống mất helper.
 - [ ] Kết quả IPC hợp lệ, sai danh tính và payload không hợp lệ.
@@ -190,7 +190,7 @@ Ví dụ cần hiểu:
 - [ ] Review contract với TV1 và IPC/Decision với TV3; dùng fixture khi API chưa hoàn thành.
 - [ ] Cập nhật tiến độ và evidence, có liên kết commit khi thực hiện triển khai.
 
-Mỗi ca thử ghi: **môi trường/Windows build, commit, tài khoản/phiên, bước chạy, expected, actual, pass/fail/chưa chạy và vị trí log/ảnh**. Không chứa token hoặc dữ liệu thật trong evidence. Theo [checklist Windows](../tests/manual/WINDOWS_CHECKLIST.md), các thao tác khóa/ngắt phiên/đổi mạng thực hiện trong VM lab.
+Mỗi ca thử ghi: **môi trường/Windows build, commit, tài khoản/phiên, bước chạy, expected, actual, pass/fail/chưa chạy và vị trí log/ảnh**. Không chứa token hoặc dữ liệu thật trong evidence. Theo [checklist Windows](../agent/windows/CHECKLIST.md), các thao tác khóa/ngắt phiên/đổi mạng thực hiện trong VM lab.
 
 ## 11. Tự kiểm tra trước buổi báo cáo
 

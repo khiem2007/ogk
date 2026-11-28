@@ -22,15 +22,15 @@ npx playwright test
 
 # Với HTML report
 npx playwright test --reporter=html
-open tests/e2e/results/index.html
+open playwright-report/index.html
 
 # Chạy 1 file cụ thể
-npx playwright test tests/e2e/01-login.spec.ts
+npx playwright test e2e/01-login.spec.ts
 ```
 
 ## Cấu hình
 
-Xem: [`dashboard/playwright.config.ts`](../../dashboard/playwright.config.ts)
+Xem: [`dashboard/playwright.config.ts`](../playwright.config.ts)
 - baseURL: `http://localhost:5173`
 - Browser: Firefox only
 - `VITE_API_MODE=demo` (không cần backend)

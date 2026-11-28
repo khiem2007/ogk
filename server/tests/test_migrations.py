@@ -10,7 +10,7 @@ def test_upgrade_empty_database_creates_erd_schema(tmp_path: Path) -> None:
     database_url = f"sqlite:///{database_path.as_posix()}"
     assert not database_path.exists()
 
-    config = Config("alembic.ini")
+    config = Config("server/alembic.ini")
     config.set_main_option("sqlalchemy.url", database_url)
     command.upgrade(config, "head")
 
@@ -42,7 +42,7 @@ def test_upgrade_empty_database_creates_erd_schema(tmp_path: Path) -> None:
 def test_upgrade_is_repeatable(tmp_path: Path) -> None:
     database_path = tmp_path / "repeat.db"
     database_url = f"sqlite:///{database_path.as_posix()}"
-    config = Config("alembic.ini")
+    config = Config("server/alembic.ini")
     config.set_main_option("sqlalchemy.url", database_url)
 
     command.upgrade(config, "head")

@@ -22,7 +22,7 @@ Task **TV1-A03** cần hoàn thiện cơ chế xác thực phiên cho ba vai tr�
 - `server/app/models/`: bổ sung bảng session, role hoặc trường auth cần migration.
 - `server/migrations/versions/`: migration auth.
 - `server/app/main.py`: đăng ký router/dependencies app.
-- `tests/unit/` và `tests/integration/`: test auth/lockout/role/ownership/CSRF.
+- `server/tests/`: test auth/lockout/role/ownership/CSRF.
 - `docs/API.md`, `docs/THREATMODEL.md`, `docs/PROGRESS.md`: cập nhật contract và bằng chứng trực tiếp liên quan.
 - `requirements-dev.txt`: dependency password hashing nếu Argon2 được chọn.
 

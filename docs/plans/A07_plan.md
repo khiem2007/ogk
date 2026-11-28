@@ -26,5 +26,5 @@
 ## Kết quả thực thi
 - Đã thêm API request/grant trong `server/app/api/requests.py`.
 - Đã đăng ký router trong `server/app/main.py`.
-- Đã thêm integration test `tests/integration/test_requests.py`.
-- Validation: `python -m pytest tests/integration/test_requests.py -q` — 2 passed.
+- Đã thêm integration test `server/tests/test_requests.py`.
+- Validation: `python -m pytest server/tests/test_requests.py -q` — 2 passed.

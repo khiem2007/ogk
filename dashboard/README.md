@@ -51,16 +51,18 @@ npx playwright test --reporter=html
 ## Cấu trúc thư mục
 
 ```
-dashboard/src/
-├── api/client.ts          # HttpOgkClient + DemoOgkClient
-├── components/            # StatusBadges, shared UI
-├── data/
-│   ├── demoFixtures.ts    # Demo state (cô lập, không lẫn production)
-│   └── domainCatalog.ts   # 200+ domain entries, NT6 protected list
-├── pages/                 # 8 trang chính (Login, Overview, Apps, ...)
-├── styles/app.css         # Sage green design system
-├── types/ogk.ts           # TypeScript types từ contracts/
-└── utils/validation.ts    # Schedule/domain validation
+dashboard/
+├── src/
+│   ├── api/client.ts          # HttpOgkClient + DemoOgkClient
+│   ├── components/            # StatusBadges, shared UI
+│   ├── data/
+│   │   ├── demoFixtures.ts    # Demo state (cô lập, không lẫn production)
+│   │   └── domainCatalog.ts   # 200+ domain entries, NT6 protected list
+│   ├── pages/                 # 8 trang chính (Login, Overview, Apps, ...)
+│   ├── styles/app.css         # Sage green design system
+│   ├── types/ogk.ts           # TypeScript types từ contracts/
+│   └── utils/validation.ts    # Schedule/domain validation
+└── e2e/                       # Playwright tests
 ```
 
 ## Các trang chính
