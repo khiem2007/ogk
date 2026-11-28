@@ -206,7 +206,10 @@ class Command(Base):
     device_id: Mapped[str] = mapped_column(ForeignKey("devices.id", ondelete="CASCADE"), nullable=False)
     type: Mapped[str] = mapped_column(String(64), nullable=False)
     payload_json: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
+    issued_at: Mapped[datetime] = mapped_column(nullable=False)
     expires_at: Mapped[datetime] = mapped_column(nullable=False)
+    delivered_at: Mapped[datetime | None]
+    resolved_at: Mapped[datetime | None]
     status: Mapped[str] = mapped_column(String(32), nullable=False, default="queued")
     dedup_key: Mapped[str] = mapped_column(String(36), nullable=False)
     result_json: Mapped[str | None] = mapped_column(Text)

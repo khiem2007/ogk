@@ -167,6 +167,21 @@
 - Replay/lost ACK, event trùng trong cùng batch và replay sau khi đã commit không nhân `UsageInterval` hoặc `DeviceEvent`; payload sai hoặc batch vượt bound không commit dữ liệu.
 - Kiểm chứng: test integration A06 pass cho heartbeat, auth bearer, batch usage, replay, duplicate trong batch, invalid payload và batch bound; ngưỡng 180 giây có unit assertion.
 
+## 2026-11-28 — TV1 triển khai A08: command queue/ACK/audit/WebSocket notify
+
+- Thêm API parent tạo/lịch sử allowlisted command; command dùng dedup `(device_id,dedup_key)`, expiry và lifecycle `queued/delivered/executed/failed/expired`.
+- Thêm API agent polling và ACK; delivery không suy ra execution, ACK replay trùng không nhân audit, ACK conflict không ghi đè kết quả đã chốt.
+- Thêm WebSocket notify `command.created` theo device access token; notification không thay polling/queue và reconnect vẫn nhận pending intent.
+- Thêm timestamps issued/delivered/resolved và migration lifecycle; audit ghi issue/delivery/result/expiry.
+- Kiểm chứng: `python -m pytest server/tests -q` — 31 passed trên nhánh A08.
+
+## 2026-11-28 — TV1 triển khai A09: report/audit/retention/delete-all
+
+- Thêm báo cáo daily/weekly theo timezone của child, dedup interval, top 10 app/domain, block/request summary và trạng thái telemetry thiếu.
+- Thêm audit pagination/cursor và redaction; ownership áp dụng cho parent/child-view/admin.
+- Thêm retention 90 ngày theo batch cho usage, events, audit, request, grant và command; thêm delete-all với CSRF và command agent allowlisted.
+- Thêm migration index report/retention và test integration A09.
+
 ## 2026-11-28 — TV2: nền B03/B04
 
 - Đã thêm policy evaluator thuần Python cho precedence manual lock, app block/exception, lịch nửa mở, daily/category quota và grant; có ngưỡng cảnh báo 10/5/1 phút.

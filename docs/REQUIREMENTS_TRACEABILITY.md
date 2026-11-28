@@ -31,7 +31,7 @@ Trạng thái trong bảng là trạng thái truy vết, không phải tuyên b�
 | F2.4 | SafeSearch bằng DNS, kiểm bằng nslookup + browser | A10/B09/C08 | Bắt buộc, không còn là extension |
 | F2.5 | DoH/DoT/VPN/DNS thủ công là bypass cần thử và nêu giới hạn | M3, A10/B09 | DoH và đổi DNS là “nên có”; M3 vẫn bắt buộc phân tích |
 | F3.1 | Event privacy schema và allowlist type | A01/A06/B06 | Envelope kỹ thuật được phép, payload không mở rộng dữ liệu cá nhân |
-| F3.2 | Báo cáo ngày/tuần, top 10 app/domain, block, request; trẻ xem cùng dữ liệu | A09/C07 | Cần role child-view và audit view |
+| F3.2 | Báo cáo ngày/tuần, top 10 app/domain, block, request; trẻ xem cùng dữ liệu | A09/C07 | Backend A09 đã có daily/weekly/audit và ownership; còn UI C07 |
 | F3.3 | Retention 90 ngày, auto-delete, xóa toàn bộ server + agent cache | A09/B06/C07 | Kế hoạch cũ 30/90 ngày phải sửa thành 90 ngày dữ liệu trẻ |
 | F4.1 | Enrollment 8 ký tự/10 phút; heartbeat 60 giây; policy trong 60 giây; lệnh khẩn dưới 5 giây qua WebSocket | A04/A06/A08/B06/B07 | WebSocket bắt buộc cho lệnh khẩn; polling chỉ fallback |
 | F4.2 | Policy version + HMAC/chữ ký, agent từ chối bản sửa | A05/B06 | Chưa triển khai |
